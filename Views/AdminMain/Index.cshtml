@@ -1,0 +1,78 @@
+﻿@using System.Data
+@{
+    ViewData["Title"] = "Admin main";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div id="course">
+    <div class="row">
+        <div class="col-md-8 d-flex flex-wrap">
+            <div class="col-md-6 mb-2">
+                <label for="courseType" class="form-label">Course Type:</label>
+                <select class="form-control" id="courseType">
+                    <option value="it">IT</option>
+                    <option value="pharma">Pharma</option>
+                    <option value="MedicalDeviceVigilance">MedicalDeviceVigilance</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-2">
+                <label for="courseName" class="form-label">Course Name:</label>
+                <input type="text" class="form-control" id="courseName" name="courseName" maxlength="50" required>
+            </div>
+            <div class="col-md-12 mb-2">
+                <label for="courseDetails" class="form-label">Course Details:</label>
+                <textarea class="form-control" id="courseDetails" name="courseDetails" rows="9" required></textarea>
+            </div>
+        </div>
+
+        <div class="col-md-4 d-flex flex-column align-items-center">
+            <label for="courseImage" class="form-label">Course Photo:</label>
+            <input type="file" class="form-control" id="courseImage" name="courseImage" onchange="courseImagepreviewImage(this)">
+            <img id="courseImagePreview" src="#" class="mt-2" style="display: none; max-width:200px;max-height:200px;" />
+            <button type="button" class="btn btn-primary mt-2" id="btncourse">Add Course</button>
+            <span id="courseStatus" class="mt-2"></span>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/jquery-2.1.4.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#btncourse').on('click', function () {
+            var formData = new FormData();
+            formData.append("courseType", $('#courseType').val());
+            formData.append("courseName", $('#courseName').val());
+            formData.append("courseDetails", $('#courseDetails').val());
+            var image = $("#courseImage").prop("files")[0];
+            if (image) {
+                formData.append("courseImage", image);
+            }
+            $.ajax({
+                url: '/AdminMain/AddCourse',
+                method: 'POST',
+                processData: false,
+                contentType: false,
+                data: formData,
+                success: function (response) {
+                    $("#btncourse").hide();
+                    $("#courseStatus").text("course is added.").css('color', 'green');
+                },
+                error: function (xhr, status, error) {
+                    $("#courseStatus").text("Error in adding a course, (Contact your developer).").css('color', 'red');
+                }
+            });
+        });
+        $("#courseImage").change(function () {
+            courseImagepreviewImage(this);
+        });
+        function courseImagepreviewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $("#courseImagePreview").attr("src", e.target.result);
+                    $("#courseImagePreview").show();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    });
+</script>
