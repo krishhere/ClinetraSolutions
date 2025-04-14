@@ -1,6 +1,7 @@
 ﻿using MySql.Data.MySqlClient;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using System.Data;
 
 namespace ClinetraSolutions.Services
 {
@@ -84,6 +85,37 @@ namespace ClinetraSolutions.Services
                 con?.Close();
             }
             return flag;
+        }
+        public static DataTable GetData(string tableName)
+        {
+            string query = $"SELECT Id, CourseName, courseDetails, image FROM {tableName}";
+            return GetDBTable(query);
+        }
+        public static DataTable GetDBTable(string query)
+        {
+            MySqlConnection connection = null;
+            DataTable dt = new DataTable();
+            JObject db = ReadJSONData();
+            string conn = db["ConnectionStrings"]["MySqlConnection"].ToString();
+            try
+            {
+                connection = new MySqlConnection(conn);
+                connection.Open();
+                MySqlCommand cmd = connection.CreateCommand();
+                cmd.CommandType = CommandType.Text;
+                MySqlCommand command = new MySqlCommand(query, connection);
+                MySqlDataAdapter adapter = new MySqlDataAdapter(command);
+                adapter.Fill(dt);
+            }
+            catch (Exception ex)
+            {
+                //ScriptManager.RegisterStartupScript(this, this.GetType(), "popup", "alert('Technical issues. please try later');", true);
+            }
+            finally
+            {
+                connection.Close();
+            }
+            return dt;
         }
     }
 }

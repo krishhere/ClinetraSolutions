@@ -2,13 +2,31 @@
 @{
     ViewData["Title"] = "Admin main";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    DataTable dtMedicalDeviceVigilance = ViewData["MedicalDeviceVigilance"] as DataTable;
+    DataTable dtit = ViewData["IT"] as DataTable;
+    DataTable dtPharma = ViewData["Pharma"] as DataTable;
 }
-<div id="course">
+<style>
+    .collapsible-content {
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 2s ease;
+        background-color: #f1f1f1;
+        padding: 0 15px;
+    }
+
+        .collapsible-content.show {
+            max-height: fit-content;
+            padding: 10px 15px;
+        }
+</style>
+<button onclick="toggleCollapse('myCollapsible')" class="form-select" style="width:fit-content; border:none;padding:5px 35px 5px 5px;background-color:transparent;font-size:large;"><u><b>Add a course</b></u></button>
+<div id="myCollapsible" class="collapsible-content">
     <div class="row">
         <div class="col-md-8 d-flex flex-wrap">
             <div class="col-md-6 mb-2">
                 <label for="courseType" class="form-label">Course Type:</label>
-                <select class="form-control" id="courseType">
+                <select class="form-select" id="courseType">
                     <option value="it">IT</option>
                     <option value="pharma">Pharma</option>
                     <option value="MedicalDeviceVigilance">MedicalDeviceVigilance</option>
@@ -23,18 +41,113 @@
                 <textarea class="form-control" id="courseDetails" name="courseDetails" rows="9" required></textarea>
             </div>
         </div>
-
         <div class="col-md-4 d-flex flex-column align-items-center">
             <label for="courseImage" class="form-label">Course Photo:</label>
             <input type="file" class="form-control" id="courseImage" name="courseImage" onchange="courseImagepreviewImage(this)">
             <img id="courseImagePreview" src="#" class="mt-2" style="display: none; max-width:200px;max-height:200px;" />
             <button type="button" class="btn btn-primary mt-2" id="btncourse">Add Course</button>
-            <span id="courseStatus" class="mt-2"></span>
+            <span id="courseStatus" class="mt-2"></span> - <span id="countdown">3</span> seconds...
         </div>
     </div>
 </div>
+<hr />
+<button onclick="toggleCollapse('ITCollapsible')" class="form-select" style="width:fit-content; border:none;padding:5px 35px 5px 5px;background-color:transparent;font-size:large;"><u><b>IT courses</b></u></button>
+<div id="ITCollapsible" class="collapsible-content table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Course Name</th>
+                <th>Course Details</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dtit != null)
+            {
+                foreach (DataRow row in dtit.Rows)
+                {
+                    var image = row["image"] as byte[];
+                    var imageSrc = image == null ? Url.Content("~/imges/blog-mini-01.jpg") : $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
+                    <tr>
+                        <td>@row["Id"]</td>
+                        <td>@row["CourseName"]</td>
+                        <td>@row["courseDetails"]</td>
+                        <td><img src="@imageSrc" alt="Course Image" style="max-width: 200px;"></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<hr />
+<button onclick="toggleCollapse('medicaldevicevigilanceCollapsible')" class="form-select" style="width:fit-content; border:none;padding:5px 35px 5px 5px;background-color:transparent;font-size:large;"><u><b>Medical device vigilance courses</b></u></button>
+<div id="medicaldevicevigilanceCollapsible" class="collapsible-content table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Course Name</th>
+                <th>Course Details</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dtMedicalDeviceVigilance != null)
+            {
+                foreach (DataRow row in dtMedicalDeviceVigilance.Rows)
+                {
+                    var image = row["image"] as byte[];
+                    var imageSrc = image == null ? Url.Content("~/imges/blog-mini-01.jpg") : $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
+                    <tr>
+                        <td>@row["Id"]</td>
+                        <td>@row["CourseName"]</td>
+                        <td>@row["courseDetails"]</td>
+                        <td><img src="@imageSrc" alt="Course Image" style="max-width: 200px;"></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<hr />
+<button onclick="toggleCollapse('PharmaCollapsible')" class="form-select" style="width:fit-content; border:none;padding:5px 35px 5px 5px;background-color:transparent;font-size:large;"><u><b>Pharma courses</b></u></button>
+<div id="PharmaCollapsible" class="collapsible-content table-responsive">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Course Name</th>
+                <th>Course Details</th>
+                <th>Image</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dtPharma != null)
+            {
+                foreach (DataRow row in dtPharma.Rows)
+                {
+                    var image = row["image"] as byte[];
+                    var imageSrc = image == null ? Url.Content("~/imges/blog-mini-01.jpg") : $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
+                    <tr>
+                        <td>@row["Id"]</td>
+                        <td>@row["CourseName"]</td>
+                        <td>@row["courseDetails"]</td>
+                        <td><img src="@imageSrc" alt="Course Image" style="max-width: 200px;"></td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
 
 <script src="~/js/jquery-2.1.4.min.js"></script>
+<script>
+    function toggleCollapse(id) {
+        const content = document.getElementById(id);
+        content.classList.toggle('show');
+    }
+</script>
 <script>
     $(document).ready(function () {
         $('#btncourse').on('click', function () {
@@ -55,6 +168,20 @@
                 success: function (response) {
                     $("#btncourse").hide();
                     $("#courseStatus").text("course is added.").css('color', 'green');
+                    let countdown = 3; // Start the countdown from 3
+                    const countdownElement = document.getElementById("countdown");
+
+                    // Create an interval to update the countdown every second
+                    const interval = setInterval(() => {
+                        countdownElement.textContent = countdown; // Update the <span> content
+                        countdown--; // Decrease the countdown value
+                    }, 1000);
+
+                    // Use setTimeout to reload the page after 3 seconds
+                    setTimeout(() => {
+                        clearInterval(interval); // Stop the interval when countdown ends
+                        location.reload(); // Reload the page
+                    }, 3000);
                 },
                 error: function (xhr, status, error) {
                     $("#courseStatus").text("Error in adding a course, (Contact your developer).").css('color', 'red');

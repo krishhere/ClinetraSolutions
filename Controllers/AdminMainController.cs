@@ -9,6 +9,9 @@ namespace ClinetraSolutions.Controllers
     {
         public IActionResult Index()
         {
+            ViewData["MedicalDeviceVigilance"] = DbData.GetData("MedicalDeviceVigilance");
+            ViewData["IT"] = DbData.GetData("IT");
+            ViewData["Pharma"] = DbData.GetData("pharma");
             return View();
         }
         
