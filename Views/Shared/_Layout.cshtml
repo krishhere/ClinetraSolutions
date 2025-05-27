@@ -1,10 +1,10 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Clinetra Solutions</title>
+    <title>Clinetra - @ViewData["Title"]</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <meta name="description" content="Margo - Responsive HTML5 Template">
+    <meta name="description" content="Clinetra - Responsive HTML5 Template">
     <meta name="author" content="iThemesLab">
     <link rel="stylesheet" href="asset/css/bootstrap.min.css" type="text/css" media="screen">
     <link rel="stylesheet" href="css/font-awesome.min.css" type="text/css" media="screen">
@@ -13,7 +13,19 @@
     <link rel="stylesheet" type="text/css" href="css/responsive.css" media="screen">
     <link rel="stylesheet" type="text/css" href="css/animate.css" media="screen">
     <link rel="stylesheet" type="text/css" href="css/colors/red.css" title="red" media="screen" />
-    
+    <link rel="stylesheet" type="text/css" href="css/colors/jade.css" title="jade" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/blue.css" title="blue" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/beige.css" title="beige" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/cyan.css" title="cyan" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/green.css" title="green" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/orange.css" title="orange" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/peach.css" title="peach" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/pink.css" title="pink" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/purple.css" title="purple" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/sky-blue.css" title="sky-blue" media="screen" />
+    <link rel="stylesheet" type="text/css" href="css/colors/yellow.css" title="yellow" media="screen" />
+
+    <!-- JavaScripts  -->
     <script type="text/javascript" src="js/jquery-2.1.4.min.js"></script>
     <script type="text/javascript" src="js/jquery.migrate.js"></script>
     <script type="text/javascript" src="js/modernizrr.js"></script>
@@ -33,14 +45,12 @@
 </head>
 <body>
     <div id="container">
-
+        <div class="hidden-header"></div>
         <header class="clearfix">
-
             <div class="top-bar">
                 <div class="container">
                     <div class="row">
                         <div class="col-md-6">
-                            <!-- Start Contact Info -->
                             <ul class="contact-details">
                                 <li>
                                     <a href="#"><i class="fa fa-map-marker"></i> House-54/A, London, UK</a>
@@ -55,7 +65,6 @@
                             <!-- End Contact Info -->
                         </div>
                         <div class="col-md-6">
-                            <!-- Start Social Links -->
                             <ul class="social-list">
                                 <li>
                                     <a class="facebook itl-tooltip" data-placement="bottom" title="Facebook" href="#"><i class="fa fa-facebook"></i></a>
@@ -64,99 +73,61 @@
                                     <a class="twitter itl-tooltip" data-placement="bottom" title="Twitter" href="#"><i class="fa fa-twitter"></i></a>
                                 </li>
                                 <li>
-                                    <a class="google itl-tooltip" data-placement="bottom" title="Google Plus" href="#"><i class="fa fa-google-plus"></i></a>
-                                </li>
-                                <li>
-                                    <a class="dribbble itl-tooltip" data-placement="bottom" title="Dribble" href="#"><i class="fa fa-dribbble"></i></a>
-                                </li>
-                                <li>
                                     <a class="linkdin itl-tooltip" data-placement="bottom" title="Linkedin" href="#"><i class="fa fa-linkedin"></i></a>
-                                </li>
-                                <li>
-                                    <a class="flickr itl-tooltip" data-placement="bottom" title="Flickr" href="#"><i class="fa fa-flickr"></i></a>
-                                </li>
-                                <li>
-                                    <a class="tumblr itl-tooltip" data-placement="bottom" title="Tumblr" href="#"><i class="fa fa-tumblr"></i></a>
                                 </li>
                                 <li>
                                     <a class="instgram itl-tooltip" data-placement="bottom" title="Instagram" href="#"><i class="fa fa-instagram"></i></a>
                                 </li>
-                                <li>
-                                    <a class="vimeo itl-tooltip" data-placement="bottom" title="vimeo" href="#"><i class="fa fa-vimeo-square"></i></a>
-                                </li>
-                                <li>
-                                    <a class="skype itl-tooltip" data-placement="bottom" title="Skype" href="#"><i class="fa fa-skype"></i></a>
-                                </li>
                             </ul>
-                            <!-- End Social Links -->
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- End Top Bar -->
-            <!-- Start Header ( Logo & Naviagtion ) -->
+            
             <div class="navbar navbar-default navbar-top">
                 <div class="container">
                     <div class="navbar-header">
-                        <!-- Stat Toggle Nav Link For Mobiles -->
                         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                             <i class="fa fa-bars"></i>
                         </button>
-                        <!-- End Toggle Nav Link For Mobiles -->
-                        <a class="navbar-brand" href="index.html"><img alt="" src="images/margo.png"></a>
+                        <a class="navbar-brand" href="/Home">Clinetra</a>
                     </div>
                     <div class="navbar-collapse collapse">
                         <!-- Stat Search -->
-                        <div class="search-side">
+                        @* <div class="search-side">
                             <a class="show-search"><i class="fa fa-search"></i></a>
                             <div class="search-form">
                                 <form autocomplete="off" role="search" method="get" class="searchform" action="#">
                                     <input type="text" value="" name="s" id="s" placeholder="Search the site...">
                                 </form>
                             </div>
-                        </div>
+                        </div> *@
                         <!-- End Search -->
                         <!-- Start Navigation List -->
                         <ul class="nav navbar-nav navbar-right">
                             <li>
-                                <a class="active" href="index.html">Home</a>
-                                <ul class="dropdown">
-                                    <li><a href="index.html">Home Main Version</a></li>
-                                    <li><a href="index-01.html">Home Version 1</a></li>
-                                    <li><a href="index-02.html">Home Version 2</a></li>
-                                    <li><a href="index-03.html">Home Version 3</a></li>
-                                    <li><a class="active" href="index-04.html">Home Version 4</a></li>
-                                    <li><a href="index-05.html">Home Version 5</a></li>
-                                    <li><a href="index-06.html">Home Version 6</a></li>
-                                    <li><a href="index-07.html">Home Version 7</a></li>
-                                </ul>
+                                <a href="/Home">Home</a>
                             </li>
                             <li>
                                 <a href="about.html">Pages</a>
                                 <ul class="dropdown">
-                                    <li><a href="about.html">About</a></li>
-                                    <li><a href="services.html">Services</a></li>
+                                    <li><a href="">About</a></li>
+                                    <li><a href="">Services</a></li>
                                     <li><a href="right-sidebar.html">Right Sidebar</a></li>
                                     <li><a href="left-sidebar.html">Left Sidebar</a></li>
                                     <li><a href="404.html">404 Page</a></li>
                                 </ul>
                             </li>
                             <li>
-                                <a href="#">Shortcodes</a>
+                                <a href="Courses">All courses</a>
                                 <ul class="dropdown">
-                                    <li><a href="tabs.html">Tabs</a></li>
-                                    <li><a href="buttons.html">Buttons</a></li>
-                                    <li><a href="action-box.html">Action Box</a></li>
-                                    <li><a href="testimonials.html">Testimonials</a></li>
-                                    <li><a href="latest-posts.html">Latest Posts</a></li>
-                                    <li><a href="latest-projects.html">Latest Projects</a></li>
-                                    <li><a href="pricing.html">Pricing Tables</a></li>
-                                    <li><a href="animated-graphs.html">Animated Graphs</a></li>
-                                    <li><a href="accordion-toggles.html">Accordion & Toggles</a></li>
+                                    <li><a href="/Pharma">Pharma IT</a></li>
+                                    <li><a href="/MedicalDevice">Medical Device</a></li>
+                                    <li><a href="/IT">Software</a></li>
                                 </ul>
                             </li>
                             <li>
-                                <a href="portfolio-3.html">Portfolio</a>
+                                <a href="">Portfolio</a>
                                 <ul class="dropdown">
                                     <li><a href="portfolio-2.html">2 Columns</a></li>
                                     <li><a href="portfolio-3.html">3 Columns</a></li>
@@ -299,9 +270,9 @@
                 <!-- Mobile Menu End -->
 
             </div>
-            <!-- End Header ( Logo & Naviagtion ) -->
 
         </header>
+        <!-- End Header -->
 
             <main role="main" class="pb-3">
                 @RenderBody()
@@ -354,6 +325,8 @@
                             </ul>
                         </div>
                     </div>
+                    <!-- .col-md-3 -->
+                    <!-- End Subscribe & Social Links Widget -->
                     <!-- Start Twitter Widget -->
                     <div class="col-md-3">
                         <div class="footer-widget twitter-widget">
@@ -374,6 +347,8 @@
                             </ul>
                         </div>
                     </div>
+                    <!-- .col-md-3 -->
+                    <!-- End Twitter Widget -->
                     <!-- Start Flickr Widget -->
                     <div class="col-md-3">
                         <div class="footer-widget flickr-widget">
@@ -432,7 +407,7 @@
                     <!-- Start Contact Widget -->
                     <div class="col-md-3">
                         <div class="footer-widget contact-widget">
-                            <h4><img src="images/footer-margo.png" class="img-responsive" alt="Footer Logo"></h4>
+                            <h4><img src="images/footer-margo.png" class="img-responsive" alt="Footer Logo" /></h4>
                             <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident</p>
                             <ul>
                                 <li><span>Phone Number:</span> +01 234 567 890</li>
@@ -451,7 +426,7 @@
                 <div class="copyright-section">
                     <div class="row">
                         <div class="col-md-6">
-                            <p>© 2014 Margo - All Rights Reserved <a href="http://graygrids.com">GrayGrids</a> </p>
+                            <p>&copy; 2014 Clinetra - All Rights Reserved <a href="http://graygrids.com">GrayGrids</a> </p>
                         </div>
                         <div class="col-md-6">
                             <ul class="footer-nav">
@@ -466,8 +441,10 @@
 
             </div>
         </footer>
-    </div>
+        <!-- End Footer -->
+        <a href="#" class="back-to-top"><i class="fa fa-angle-up"></i></a>
 
+    </div>
     <script type="text/javascript" src="js/script.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>

@@ -1,0 +1,133 @@
+﻿@using System.Data
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DataTable dtCourse = ViewData["courses"] as DataTable;
+    string mainCourse = ViewData["MainCourse"] as string;
+}
+<div class="page-banner" style="padding:40px 0; background: url(images/slide-02-bg.jpg) center #f9f9f9;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>@mainCourse</h2>
+            </div>
+            <div class="col-md-6">
+                <ul class="breadcrumbs">
+                    <li><a href="/Home">Home</a></li>
+                    <li>@mainCourse</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<section id="blog-posts" class="blog-posts section">
+    <div class="container">
+        @if (dtCourse != null && dtCourse.Rows.Count > 0)
+        {
+            <div class="row gy-4">
+                @foreach (DataRow dataRow in dtCourse.Rows)
+                {
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 border-1">
+                            <div class="card-img-top position-relative text-center">
+                                @{
+                                    var Image = dataRow["image"] as byte[];
+                                    var imageSrc = Image == null ? Url.Content("~/img/medicalConference.webp") : $"data:image/jpeg;base64,{Convert.ToBase64String(Image)}";
+                                }
+                                <img src="@imageSrc" alt="Course Image" class="img-fluid rounded-top" style="height: 200px; object-fit: cover;">
+                            </div>
+                            <div class="card-body text-center">
+                                <h5 class="card-title mb-2 fw-bold" style="color:#008374;">@dataRow["CourseName"]</h5>
+                                <p class="card-text text-muted mb-3" style="font-size:large;">
+                                    <strong class="text-success">
+                                        <span style="font-size:small;">Rs.</span>
+                                        <span class="price" data-price="@dataRow["Price"]">@dataRow["Price"]</span><span style="font-size:small;">.00</span>
+                                    </strong>
+                                </p>
+                                <p class="card-text text-muted mb-3" style="font-size:small;">
+                                    <span class="text-success" style="color:black;">
+                                        <i>
+                                            Rs.<span class="price" style="text-decoration:line-through;color:black;">
+                                                @{
+                                                    int Price = Convert.ToInt32(Convert.ToInt32(@dataRow["Price"].ToString().Replace(",", "")) * 0.3);
+                                                    string actualPrice = string.Format("{0:n0}", Price + Convert.ToInt32(@dataRow["Price"].ToString().Replace(",", ""))).ToString();
+                                                }
+                                                @actualPrice.00
+                                            </span>
+                                        </i>
+                                    </span>
+                                </p>
+                                <div class="d-flex justify-content-center gap-2">
+                                    @{
+                                        string controlType = dtCourse.TableName;
+                                    }
+                                    <a href="@Url.Action("Index", controlType, new { courseType= controlType.ToUpper(),course = @dataRow["CourseName"] })" class="btn btn-outline-warning btn-sm">Get info</a>
+                                    <button class="btn btn-outline-primary btn-sm select-btn">Select</button>
+                                    <span class="btn btn-success btn-sm selected-label" style="display: none;">Selected</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            <hr />
+            <marquee behavior="alternate" scrollamount="10">
+                The promo code - <span id="promocode" style="font-size:x-large;color:#008374;font-weight:bold;">CLIN20</span> will be applied when selecting more than one course.
+            </marquee>
+            <div class="text-end mt-4">
+                Total fees: <span style="font-size:small;">Rs.</span>
+                <span id="total" class="fw-bold" style="font-size:large; color:#008374;font-weight:bold;">00</span><span style="font-size:small;">.00</span><br />
+                <input id="promo" type="text" style="width: 150px;height: 35px;border-radius: 5px;padding:5px; display:none;" placeholder="Enter promo code" autocomplete="off" maxlength="6" />
+                <span id="promoMsg" style="display:none;color:#008374;"></span>
+                <button class="btn" style="background-color:#008374;color:#fff;">Pay now</button>
+            </div>
+        }
+        else
+        {
+            <h1>No courses are available</h1>
+        }
+    </div>
+</section>
+<script src="~/js/jquery3.7.js"></script>
+<script>
+    $(document).ready(function () {
+        let total = 0;
+        let selectedCount = 0;
+
+        $('.select-btn').click(function () {
+            const postMeta = $(this).closest('.card-body');
+            const rawPrice = postMeta.find('.price').data('price');
+            if (rawPrice) {
+                const price = parseInt(rawPrice.toString().replace(/,/g, ''), 10);
+                if (!isNaN(price)) {
+                    total += price;
+                    selectedCount++;
+                    $('#total').text(`${total.toLocaleString()}`);
+                    $(this).hide();
+                    postMeta.find('.selected-label').show();
+                    if (selectedCount > 1) {
+                        $('#promo').show();
+                    }
+                } else {
+                    alert('Invalid price format');
+                }
+            } else {
+                alert('Price data not found');
+            }
+        });
+
+        $('#promo').on('input', function () {
+            let originalTotal = $('#total').text().trim().replace(/,/g, '');
+            originalTotal = parseFloat(originalTotal);
+            const code = $('#promocode').text().replace('Promo code:', '').trim();
+            const codeInput = $('#promo').val().trim();
+
+            if (codeInput === code) {
+                const discountedTotal = originalTotal * 0.8;
+                $('#total').text(discountedTotal.toLocaleString('en-IN', { maximumFractionDigits: 0 }));
+                $('#promo').hide();
+                $('#promoMsg').text('Promo is applied').show();
+            }
+        });
+
+    });
+</script>

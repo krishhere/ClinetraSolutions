@@ -1,0 +1,39 @@
+﻿@using System.Data
+@model ClinetraSolutions.Models.CourseAvailability
+<style>
+    .seat {
+        width: 40px;
+        height: 40px;
+        border: 1px solid #ccc;
+        text-align: center;
+        line-height: 40px;
+        margin: 4px 10px;
+        display: inline-block;
+    }
+
+    .seatAlign {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+@if (Model.dtCourseAvailability != null && Model.dtCourseAvailability.Rows.Count >= 1)
+{
+    <div class="col-md-12">
+        <h5 id="courseBeginDate" class="text-center">Batch starts on: @Convert.ToDateTime(Model.dtCourseAvailability.Rows[0]["BatchStartDate"]).ToString("dd MMM yy:HH:mm")</h5>
+    </div>
+    int totalSeats = 30;
+    int availSeats = Convert.ToInt32(Model.dtCourseAvailability.Rows[0]["AvailableSeats"]);
+    <div class="seatAlign col-md-12">
+        @for (int i = 1; i <= totalSeats; i++)
+        {
+            if (i <= availSeats)
+            {
+                <div class="col-md-1 seat avail" data-avail="@Model.dtCourseAvailability.Rows[0]["SeatId"]" style="background-color: green;color:white;">@i</div>
+            }
+            else
+            {
+                <div class="col-md-1 seat" style="background-color: #b9b9b9;cursor: not-allowed;">@i</div>
+            }
+        }
+    </div>
+}

@@ -1,3 +1,4 @@
+// Page Loader
 $(window).load(function () {
     "use strict";    
 	$('#loader').fadeOut();
@@ -5,6 +6,7 @@ $(window).load(function () {
 
 $(document).ready(function ($) {
 	"use strict";	
+	////	Hidder Header	
 	var headerEle = function () {
 		var $headerHeight = $('header').height();
 		$('.hidden-header').css({ 'height' : $headerHeight  + "px" });
@@ -17,6 +19,11 @@ $(document).ready(function ($) {
 	$(window).resize(function () {
 	    headerEle();
 	});
+	
+    
+    /*---------------------------------------------------*/
+    /* Progress Bar
+    /*---------------------------------------------------*/    
     $('.skill-shortcode').appear(function() {
   		$('.progress').each(function(){ 
     		$('.progress-bar').css('width',  function(){ 
@@ -25,6 +32,10 @@ $(document).ready(function ($) {
 	},{accY: -100});	
 	
 	
+    /*--------------------------------------------------*/
+    /* Counter
+    /*--------------------------------------------------*/   
+        
     $('.timer').countTo();
     $('.counter-item').appear(function() {
         $('.timer').countTo();
@@ -32,6 +43,11 @@ $(document).ready(function ($) {
     	accY: -100
     });    
     
+	
+	/*----------------------------------------------------*/
+	/*	Nice-Scroll
+	/*----------------------------------------------------*/
+	
 	$("html").niceScroll({
 		scrollspeed: 100,
 		mousescrollstep: 38,
@@ -43,7 +59,11 @@ $(document).ready(function ($) {
 		horizrailenabled: false,
 		cursorborderradius: 0,
 	});
-
+		
+	/*----------------------------------------------------*/
+	/*	Nav Menu & Search
+	/*----------------------------------------------------*/
+	
 	$(".nav > li:has(ul)").addClass("drop");
 	$(".nav > li.drop > ul").addClass("dropdown");
 	$(".nav > li.drop > ul.dropdown ul").addClass("sup-dropdown");
@@ -55,7 +75,11 @@ $(document).ready(function ($) {
 	$('.search-form input').blur(function() {
 		$('.search-form').fadeOut(300);
 	});
-
+				
+	/*----------------------------------------------------*/
+	/*	Back Top Link
+	/*----------------------------------------------------*/
+	
     var offset = 200;
     var duration = 500;
     $(window).scroll(function() {
@@ -70,7 +94,12 @@ $(document).ready(function ($) {
         $('html, body').animate({scrollTop: 0}, 600);
         return false;
     })
-
+		
+	/*----------------------------------------------------*/
+	/*	Sliders & Carousel
+	/*----------------------------------------------------*/
+	
+	////------- Touch Slider
 	var time = 4.4,
 		$progressBar,
 		$bar,
@@ -141,6 +170,7 @@ $(document).ready(function ($) {
       isPause = true;
     }
 	
+	////------- Projects Carousel
 	$(".projects-carousel").owlCarousel({
 		navigation : true,
 		pagination: false,
@@ -153,6 +183,9 @@ $(document).ready(function ($) {
 		itemsMobile : [479, 1]
 	});
 	
+	
+	
+	////------- Testimonials Carousel
 	$(".testimonials-carousel").owlCarousel({
 		navigation : true,
 		pagination: false,
@@ -164,6 +197,12 @@ $(document).ready(function ($) {
 		transitionStyle : "fade"
 	});
 	
+	
+	
+	
+	
+	
+	////------- Custom Carousel
 	$('.custom-carousel').each(function(){
 		var owl = jQuery(this),
 			itemsNum = $(this).attr('data-appeared-items'),
@@ -226,11 +265,23 @@ $(document).ready(function ($) {
 	});
 	
 	
+	
+	
+	/*----------------------------------------------------*/
+	/*	Tabs
+	/*----------------------------------------------------*/
+	
 	$('#myTab a').click(function (e) {
 		e.preventDefault()
 		$(this).tab('show')
 	})
 	
+	
+	
+	
+	/*----------------------------------------------------*/
+	/*	Css3 Transition
+	/*----------------------------------------------------*/
 	
 	$('*').each(function(){
 		if($(this).attr('data-animation')) {
@@ -243,6 +294,12 @@ $(document).ready(function ($) {
 		}
 	});
 	
+	
+	
+	
+	/*----------------------------------------------------*/
+	/*	Pie Charts
+	/*----------------------------------------------------*/
 	
 	var pieChartClass = 'pieChart',
         pieChartLoadedClass = 'pie-chart-loaded';
@@ -269,6 +326,14 @@ $(document).ready(function ($) {
 	}
 	initPieCharts();
 	
+	
+	
+	
+	
+	/*----------------------------------------------------*/
+	/*	Animation Progress Bars
+	/*----------------------------------------------------*/
+	
 	$("[data-progress-animation]").each(function() {
 		
 		var $this = $(this);
@@ -285,6 +350,14 @@ $(document).ready(function ($) {
 
 	});
 	
+	
+	
+	
+	
+	/*----------------------------------------------------*/
+	/*	Milestone Counter
+	/*----------------------------------------------------*/
+	
 	jQuery('.milestone-block').each(function() {
 		jQuery(this).appear(function() {
 			var $endNum = parseInt(jQuery(this).find('.milestone-number').text());
@@ -298,6 +371,12 @@ $(document).ready(function ($) {
 	});
 	
 	
+	
+	
+	
+	/*----------------------------------------------------*/
+	/*	Nivo Lightbox
+	/*----------------------------------------------------*/
 	
 	$('.lightbox').nivoLightbox({
 		effect: 'fadeScale',
@@ -466,13 +545,6 @@ jQuery(window).load(function(){
 });
 /* ----------------- End JS Document ----------------- */
 
-
-
-
-
-
-
-
 // Styles Switcher JS
 function setActiveStyleSheet(title) {
   var i, a, main;
@@ -527,20 +599,17 @@ function readCookie(name) {
 window.onload = function(e) {
   var cookie = readCookie("style");
   var title = cookie ? cookie : getPreferredStyleSheet();
-  setActiveStyleSheet(title);
-}
-
-window.onunload = function(e) {
-  var title = getActiveStyleSheet();
-  createCookie("style", title, 365);
+	setActiveStyleSheet('sky-blue');
 }
 
 var cookie = readCookie("style");
 var title = cookie ? cookie : getPreferredStyleSheet();
-setActiveStyleSheet(title);
+setActiveStyleSheet('sky-blue');
 
-
-
+window.onunload = function (e) {
+	var title = getActiveStyleSheet();
+	createCookie("style", title, 365);
+}
 $(document).ready(function(){
 	
 	// Styles Switcher

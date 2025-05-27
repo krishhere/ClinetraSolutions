@@ -1,0 +1,113 @@
+﻿@{
+    ViewData["Title"] = "All Courses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-banner no-subtitle">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>All Courses</h2>
+            </div>
+            <div class="col-md-6">
+                <ul class="breadcrumbs">
+                    <li><a href="#">Home</a></li>
+                    <li>All Courses</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="content">
+    <div class="container">
+        <div class="row sidebar-page">
+            <div class="col-md-12 page-content">
+                <div class="tabs-section">
+                    <ul class="nav nav-tabs" style="width: 100%;display: flex;justify-content: space-between;">
+                        <li class="active"><a href="#tab-1" data-toggle="tab" aria-expanded="true"><i class="fa fa-desktop"></i>Medical Device</a></li>
+                        <li class=""><a href="#tab-2" data-toggle="tab" aria-expanded="false"><i class="fa fa-leaf"></i>Pharma IT</a></li>
+                        <li class=""><a href="#tab-3" data-toggle="tab" aria-expanded="false"><i class="fa fa-rocket"></i>Software</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane fade active in" id="tab-1">
+                            A medical device course provides foundational knowledge and practical skills related to the design, development, regulation, and application of medical devices used in healthcare. It typically covers topics such as biomedical engineering principles, device safety standards, clinical applications, quality assurance, and regulatory compliance (e.g., FDA, ISO). This course is ideal for engineers, healthcare professionals, or students aiming to work in the medical technology industry, ensuring they understand both the technical and clinical aspects of medical devices.
+                            <button onclick="location.href='/MedicalDevice'" class="btn title" style="cursor: pointer; background: transparent; border: none; text-decoration: underline;">
+                                View course
+                            </button>
+                        </div>
+                        <!-- Tab Content 2 -->
+                        <div class="tab-pane fade" id="tab-2">
+                            A Pharma course, commonly known as a Pharmacy course, focuses on the study of drugs and medicines, their preparation, uses, effects, and safe dispensing. It equips students with knowledge in chemistry, biology, and healthcare to become qualified pharmacists or researchers. The course covers areas like pharmacology, pharmaceutics, medicinal chemistry, and clinical pharmacy, preparing graduates to work in hospitals, pharmaceutical companies, research labs, or open their own pharmacies.
+                            <button onclick="location.href='/Pharma'" class="btn title" style="cursor: pointer; background: transparent; border: none; text-decoration: underline;">
+                                View course
+                            </button>
+                        </div>
+                        <!-- Tab Content 3 -->
+                        <div class="tab-pane fade" id="tab-3">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <ul class="icons-list">
+                                        <li><i class="fa fa-check-circle"></i> <b>Development:</b> ASP.NET Core MVC is a web framework developed by Microsoft that allows developers to build modern, scalable, and high-performance web applications. It follows the Model-View-Controller (MVC) architectural pattern, which separates application logic, user interface, and data handling for better maintainability and testability. It supports dependency injection, middleware, and cloud integration, making it ideal for building dynamic, responsive web apps efficiently.</li>
+                                    </ul>
+                                </div>
+                                <div class="col-md-12">
+                                    <ul class="icons-list">
+                                        <li><i class="fa fa-check-circle"></i> <b>Testing:</b> Selenium is a popular automation testing tool that enables testers to automate web applications across different browsers, enhancing testing efficiency and accuracy. Together, these courses provide a strong foundation in full-stack development and quality assurance, making learners job-ready for roles in software development and automation testing.</li>
+                                    </ul>
+                                </div>
+                                <button onclick="location.href='/IT'" class="btn title" style="cursor: pointer; background: transparent; border: none; text-decoration: underline;">
+                                    View course
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* <div class="container">
+    <div class="row">
+    <div class="col-md-12">
+    <h3 style="text-align:center;"> All the courses</h3>
+    <div class="main-timeline">
+    <a class="timeline" style="cursor:default;">
+    <div class="timeline-icon"><i class="fa fa-globe"></i></div>
+    <div class="timeline-content">
+    <h3 class="title">Medical device</h3>
+    <p class="description">
+    A medical device course provides foundational knowledge and practical skills related to the design, development, regulation, and application of medical devices used in healthcare. It typically covers topics such as biomedical engineering principles, device safety standards, clinical applications, quality assurance, and regulatory compliance (e.g., FDA, ISO). This course is ideal for engineers, healthcare professionals, or students aiming to work in the medical technology industry, ensuring they understand both the technical and clinical aspects of medical devices.
+    <button onclick="location.href='/MedicalDevice'" class="btn title" style="cursor: pointer; background: transparent; border: none; text-decoration: underline;">
+    View course
+    </button>
+    </p>
+    </div>
+    </a>
+    <a class="timeline">
+    <div class="timeline-icon"><i class="fa fa-rocket"></i></div>
+    <div class="timeline-content">
+    <h3 class="title">Pharma IT</h3>
+    <p class="description">
+    A Pharma course, commonly known as a Pharmacy course, focuses on the study of drugs and medicines, their preparation, uses, effects, and safe dispensing. It equips students with knowledge in chemistry, biology, and healthcare to become qualified pharmacists or researchers. The course covers areas like pharmacology, pharmaceutics, medicinal chemistry, and clinical pharmacy, preparing graduates to work in hospitals, pharmaceutical companies, research labs, or open their own pharmacies.
+    <button onclick="location.href='/Pharma'" class="btn title" style="cursor: pointer; background: transparent; border: none; text-decoration: underline;">
+    View course
+    </button>
+    </p>
+    </div>
+    </a>
+    <a class="timeline">
+    <div class="timeline-icon"><i class="fa fa-code"></i></div>
+    <div class="timeline-content">
+    <h3 class="title">Software courses</h3>
+    <p class="description">
+    Software courses like ASP.NET Core and Selenium are essential for developers and testers aiming to build modern web applications and automate testing processes. ASP.NET Core is a powerful, open-source framework from Microsoft used for creating dynamic, cross-platform web apps and APIs with high performance. <br /><br />
+    On the other hand, Selenium is a popular automation testing tool that enables testers to automate web applications across different browsers, enhancing testing efficiency and accuracy. Together, these courses provide a strong foundation in full-stack development and quality assurance, making learners job-ready for roles in software development and automation testing.
+    <button onclick="location.href='/IT'" class="btn title" style="cursor: pointer; background: transparent; border: none; text-decoration: underline;">
+    View course
+    </button>
+    </p>
+    </div>
+    </a>
+    </div>
+    </div>
+    </div>
+    </div> *@

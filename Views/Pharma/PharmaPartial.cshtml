@@ -1,0 +1,256 @@
+﻿@using System.Data
+@model ClinetraSolutions.Models.PharmaModel
+@if (Model.PharmaData.Rows.Count >= 1)
+{
+    <div class="row pricing-tables">
+        <div class="col-md-4 col-sm-6">
+            <div class="pricing-table">
+                <div class="plan-name">
+                    <h3>Mono Pack</h3>
+                    <div class="text-muted">Choose any single course</div>
+                    <div class="mt-2 text-warning fw-bold">Save up to ~5%</div>
+                </div>
+                <div class="plan-price">
+                    <div class="price-value">₹ <span id="monoPrice" style="text-decoration:line-through;">0</span><span>.00</span></div>
+                    <div class="interval">/course</div>
+                    <div>Pay only: <strong class="text-primary">₹ <span id="monoPayOnly" class="fs-4 fw-bold" style="font-size:large;">0</span></strong></div>
+                </div>
+                <div class="plan-list" style="text-align:left;">
+                    <ul>
+                        @foreach (System.Data.DataRow row in Model.PharmaData.Rows)
+                        {
+                            <li>
+                                <input type="checkbox" class="form-check-input me-2 single-select" data-value="@row["CourseName"]"
+                                       data-price="@row["Price"]" data-image="data:image/png;base64,@Convert.ToBase64String((byte[])row["image"])" style="border-color: black; width: 20px; height: 20px;" />
+                                <a href="@Url.Action("Index", "CourseDetails", new { courseType = "pharma", course = row["CourseName"] })">
+                                    <strong>@row["CourseName"]</strong>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="plan-signup">
+                    <span id="monoMsg" class="text-danger"></span>
+                    <a href="javascript:void(0);" id="monoBuyNow" class="btn-system btn-small">Choose</a>
+                    <div id="single-image-preview" class="d-flex justify-content-center gap-2 flex-wrap mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tri Pack -->
+        <div class="col-md-4 col-sm-6">
+            <div class="pricing-table">
+                <div class="plan-name">
+                    <h3>Tri Pack</h3>
+                    <div class="text-muted">Choose any three courses</div>
+                    <div class="mt-2 text-warning fw-bold">Save up to ~15%</div>
+                </div>
+                <div class="plan-price">
+                    <div class="price-value">₹ <span id="TriPrice" style="text-decoration:line-through;">0</span><span>.00</span></div>
+                    <div class="interval">/course</div>
+                    <div>Pay only: <strong class="text-primary">₹ <span id="TriPayOnly" class="fs-4 fw-bold" style="font-size:large;">0</span></strong></div>
+                </div>
+                <div class="plan-list" style="text-align:left;">
+                    <ul>
+                        @foreach (System.Data.DataRow row in Model.PharmaData.Rows)
+                        {
+                            <li>
+                                <input type="checkbox" class="form-check-input me-2 tri-select" data-value="@row["CourseName"]" data-price="@row["Price"]"
+                                       data-image="data:image/png;base64,@Convert.ToBase64String((byte[])row["image"])" style="border-color: black; width: 20px; height: 20px;" />
+                                <a href="@Url.Action("Index", "CourseDetails", new { courseType = "pharma", course = row["CourseName"] })">
+                                    <b>@row["CourseName"]</b>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="plan-signup">
+                    <span id="TriMsg" class="text-danger"></span>
+                    <a href="javascript:void(0);" id="TriBuyNow" class="btn-system btn-small">Choose</a>
+                    <div id="tri-image-preview" class="d-flex justify-content-center gap-2 flex-wrap mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hexa Pack -->
+        <div class="col-md-4 col-sm-6">
+            <div class="pricing-table highlight-plan">
+                <div class="plan-name">
+                    <h3>Hexa Pack <span class="badge badge-success ms-2">Best for you</span></h3>
+                    <div class="text-muted">Choose any six courses</div>
+                    <div class="mt-2 text-warning fw-bold">Save up to ~20%</div>
+                </div>
+                <div class="plan-price">
+                    <div class="price-value">₹ <span id="HexaPrice" style="text-decoration:line-through;">0</span><span>.00</span></div>
+                    <div class="interval">/course</div>
+                    <div>Pay only: <strong class="text-success">₹ <span id="HexaPayOnly" class="fs-4 fw-bold" style="font-size:large;">0</span></strong></div>
+                </div>
+                <div class="plan-list" style="text-align:left;">
+                    <ul>
+                        @foreach (System.Data.DataRow row in Model.PharmaData.Rows)
+                        {
+                            <li>
+                                <input type="checkbox" class="form-check-input me-2 Hexa-select" data-value="@row["CourseName"]"
+                                       data-price="@row["Price"]" data-image="data:image/png;base64,@Convert.ToBase64String((byte[])row["image"])"
+                                       style="border-color: black; width: 20px; height: 20px;" />
+                                <a href="@Url.Action("Index", "CourseDetails", new { courseType = "pharma", course = row["CourseName"] })">
+                                    <strong>@row["CourseName"]</strong>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="plan-signup">
+                    <span id="HexaMsg" class="text-danger"></span>
+                    <a href="javascript:void(0);" id="HexaBuyNow" class="btn-system btn-small border-btn">Choose</a>
+                    <div id="hexa-image-preview" class="d-flex justify-content-center gap-2 flex-wrap mt-3"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+else
+{
+    <h3> No Pharma courses </h3>
+}
+<script src="~/js/jquery3.7.js"></script>
+<script>
+    $(document).ready(function () {
+        let SingleSelectedOrder = [];
+        let TriSelectedOrder = [];
+        let HexaSelectedOrder = [];
+
+        function singleupdatePriceAndImages() {
+            let totalPrice = 0;
+            $('#single-image-preview').empty();
+            SingleSelectedOrder.forEach(item => {
+                const price = parseInt($(item).data('price'), 10); // Parse with base 10
+                const imageSrc = $(item).data('image');
+                totalPrice += price;
+                const img = $('<img />', {
+                    src: imageSrc,
+                    class: 'img-thumbnail',
+                    style: 'width: 80px; height: 80px; object-fit: cover;'
+                });
+                $('#single-image-preview').append(img);
+            });
+            const discountPrice = Math.round(totalPrice * 1.15);
+            $('#monoPrice').text(discountPrice);
+            $('#monoPayOnly').text(totalPrice);
+        }
+        $('.single-select').on('change', function () {
+            $('#monoMsg').text('');
+            const isChecked = $(this).is(':checked');
+            if (isChecked) {
+                SingleSelectedOrder.push(this);
+                if (SingleSelectedOrder.length > 1) {
+                    const firstSelected = SingleSelectedOrder.shift();
+                    $(firstSelected).prop('checked', false);
+                }
+            } else {
+                SingleSelectedOrder = SingleSelectedOrder.filter(item => item !== this);
+            }
+            singleupdatePriceAndImages();
+        });
+        $('.single-select:checked').each(function () {
+            SingleSelectedOrder.push(this);
+        });
+        singleupdatePriceAndImages();
+
+        function updatePriceAndImages() {
+            let totalPrice = 0;
+            $('#tri-image-preview').empty();
+            TriSelectedOrder.forEach(item => {
+                const price = parseInt($(item).data('price'), 10);
+                const imageSrc = $(item).data('image');
+                totalPrice += price;
+                const img = $('<img />', {
+                    src: imageSrc,
+                    class: 'img-thumbnail',
+                    style: 'width: 80px; height: 80px; object-fit: cover;'
+                });
+                $('#tri-image-preview').append(img);
+            });
+            const discountPrice = Math.round(totalPrice * 1.15);
+            $('#TriPrice').text(discountPrice);
+            $('#TriPayOnly').text(totalPrice);
+        }
+        $('.tri-select').on('change', function () {
+            $('#TriMsg').text('');
+            const isChecked = $(this).is(':checked');
+            if (isChecked) {
+                TriSelectedOrder.push(this);
+                if (TriSelectedOrder.length > 3) {
+                    const firstSelected = TriSelectedOrder.shift();
+                    $(firstSelected).prop('checked', false);
+                }
+            } else {
+                TriSelectedOrder = TriSelectedOrder.filter(item => item !== this);
+            }
+            updatePriceAndImages();
+        });
+        $('.tri-select:checked').each(function () {
+            TriSelectedOrder.push(this);
+        });
+        updatePriceAndImages();
+
+        function updateHexaPriceAndImages() {
+            let totalPrice = 0;
+            $('#hexa-image-preview').empty();
+            HexaSelectedOrder.forEach(item => {
+                const price = parseInt($(item).data('price'), 10);
+                const imageSrc = $(item).data('image');
+                totalPrice += price;
+                const img = $('<img />', {
+                    src: imageSrc,
+                    class: 'img-thumbnail',
+                    style: 'width: 80px; height: 80px; object-fit: cover;'
+                });
+                $('#hexa-image-preview').append(img);
+            });
+            const discountPrice = Math.round(totalPrice * 1.20);
+            $('#HexaPrice').text(discountPrice);
+            $('#HexaPayOnly').text(totalPrice);
+        }
+        $('.Hexa-select').on('change', function () {
+            $('#HexaMsg').text('');
+            const isChecked = $(this).is(':checked');
+            if (isChecked) {
+                HexaSelectedOrder.push(this);
+                if (HexaSelectedOrder.length > 6) {
+                    const firstSelected = HexaSelectedOrder.shift();
+                    $(firstSelected).prop('checked', false);
+                }
+            } else {
+                HexaSelectedOrder = HexaSelectedOrder.filter(item => item !== this);
+            }
+            updateHexaPriceAndImages();
+        });
+        $('.Hexa-select:checked').each(function () {
+            HexaSelectedOrder.push(this);
+        });
+        updateHexaPriceAndImages();
+
+        $("#monoBuyNow").on("click", function () {
+            var checkedCount = $(".single-select:checked").length;
+            if (checkedCount === 0) {
+                $('#monoMsg').text("You must choose 1 course in Mono Pack");
+            }
+        });
+
+        $("#TriBuyNow").on("click", function () {
+            var checkedCount = $(".tri-select:checked").length;
+            if (checkedCount < 3) {
+                $('#TriMsg').text("You must choose 3 courses in Tri Pack");
+            }
+        });
+
+        $("#HexaBuyNow").on("click", function () {
+            var checkedCount = $(".Hexa-select:checked").length;
+            if (checkedCount < 6) {
+                $('#HexaMsg').text("You must choose 6 courses in Hexa Pack");
+            }
+        });
+    });
+</script>

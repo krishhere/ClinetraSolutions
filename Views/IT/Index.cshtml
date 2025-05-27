@@ -1,0 +1,219 @@
+﻿@using System.Data
+@{
+    ViewData["Title"] = "Clinetra - Software courses";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DataTable dtIT = ViewData["IT"] as DataTable;
+}
+<style>
+    .plan-card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        padding: 25px;
+        height: 100%;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    .highlight {
+        border: 2px solid #28a745;
+    }
+
+    .btn-plan {
+        width: 100%;
+        margin-top: 15px;
+    }
+
+    .badge-best {
+        background-color: #28a745;
+        color: white;
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 20px;
+    }
+</style>
+
+<div class="page-title">
+    <div class="heading">
+        <div class="container">
+            <div class="row d-flex justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1>Software courses</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="service-details" class="service-details section">
+    <div class="container">
+        <div class="row g-4" id="ITContainer">
+            @if (dtIT.Rows.Count >= 1)
+            {
+                <div class="col-md-6">
+                    <div class="plan-card">
+                        <h5 class="text-center"><strong>Mono Pack</strong></h5>
+                        <div class="text-muted text-center">Choose any single course</div>
+                        <div class="mt-2 text-warning fw-bold text-center">Save up to ~5%</div><hr />
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fs-6 fw-bold mt-2">
+                                <span id="firstPrice" style="display:none;">@dtIT.Rows[0]["Price"].ToString().Replace(",", "")</span>
+                                ₹ <span id="monoPrice" style="text-decoration:line-through;">0</span>
+                                <span class="text-muted fs-6">/course</span>
+                            </div>
+                            <div class="mt-2">
+                                Pay only: <strong class="text-primary">₹ <span id="monoPayOnly" class="fs-4 fw-bold">0</span></strong>
+                            </div>
+                        </div>
+                        <ul class="mt-3 list-unstyled">
+                            @for (int i = 0; i < dtIT.Rows.Count; i++)
+                            {
+                                var row = dtIT.Rows[i];
+                                <li>
+                                    <input type="checkbox" class="form-check-input me-2 single-select" data-value="@row["CourseName"]" data-price="@row["Price"].ToString().Replace(",", "")" data-image="data:image/png;base64,@Convert.ToBase64String((byte[])row["image"])" style="border-color: black;width: 20px;height: 20px;" />
+                                    <a href="@Url.Action("Index", "CourseDetails", new { courseType = "IT", course = row["CourseName"] })">
+                                        <strong>@row["CourseName"]</strong>
+                                    </a>
+                                </li>
+                            }
+                        </ul>
+                        <span id="monoMsg" style="color:red;"></span>
+                        <button class="btn btn-plan" id="monoBuyNow" style="background-color:#008374;color:#fff;">Buy Now</button>
+                        <div id="single-image-preview" class="d-flex justify-content-center gap-2 flex-wrap mt-3"></div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="plan-card ">
+                        <h5 class="text-center"><strong>Tri Pack</strong></h5>
+                        <div class="text-muted text-center">Choose any three courses</div>
+                        <div class="mt-2 text-warning fw-bold text-center">Save up to ~15%</div><hr />
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="fs-6 fw-bold mt-2">
+                                ₹ <span id="TriPrice" style="text-decoration:line-through;">0</span>
+                                <span class="text-muted fs-6">/course</span>
+                            </div>
+                            <div class="mt-2">
+                                Pay only: <strong class="text-primary">
+                                    ₹ <span id="TriPayOnly" class="fs-4 fw-bold">0</span>
+                                </strong>
+                            </div>
+                        </div>
+                        <ul class="mt-3 list-unstyled">
+                            @for (int i = 0; i < dtIT.Rows.Count; i++)
+                            {
+                                var row = dtIT.Rows[i];
+                                <li>
+                                    <input type="checkbox" class="form-check-input me-2 tri-select" data-value="@row["CourseName"]" data-price="@row["Price"]" data-image="data:image/png;base64,@Convert.ToBase64String((byte[])row["image"])" style="border-color: black;width: 20px;height: 20px;" />
+                                    <a href="@Url.Action("Index", "CourseDetails", new { courseType = "IT", course = row["CourseName"] })">
+                                        <strong>@row["CourseName"]</strong>
+                                    </a>
+                                </li>
+                            }
+                        </ul><span id="TriMsg" style="color:red;"></span>
+                        <button id="TriBuyNow" class="btn btn-plan" style="background-color:#008374;color:#fff;">Buy Now</button>
+                        <div id="tri-image-preview" class="d-flex justify-content-center gap-2 flex-wrap mt-3"></div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <h3> No software courses </h3>
+            }
+        </div>
+    </div>
+</section>
+
+<script src="~/js/jquery3.7.js"></script>
+<script>
+    $(document).ready(function () {
+        let SingleSelectedOrder = [];
+        let TriSelectedOrder = [];
+
+        function singleupdatePriceAndImages() {
+            let totalPrice = 0;
+            $('#single-image-preview').empty();
+            SingleSelectedOrder.forEach(item => {
+                const price = parseInt($(item).data('price'), 10);
+                const imageSrc = $(item).data('image');
+                totalPrice += price;
+                const img = $('<img />', {
+                    src: imageSrc,
+                    class: 'img-thumbnail',
+                    style: 'width: 80px; height: 80px; object-fit: cover;'
+                });
+                $('#single-image-preview').append(img);
+            });
+            const discountPrice = Math.round(totalPrice * 1.15);
+            $('#monoPrice').text(discountPrice);
+            $('#monoPayOnly').text(totalPrice);
+        }
+        $('.single-select').on('change', function () {
+            $('#monoMsg').text('');
+            const isChecked = $(this).is(':checked');
+            if (isChecked) {
+                SingleSelectedOrder.push(this);
+                if (SingleSelectedOrder.length > 1) {
+                    const firstSelected = SingleSelectedOrder.shift();
+                    $(firstSelected).prop('checked', false);
+                }
+            } else {
+                SingleSelectedOrder = SingleSelectedOrder.filter(item => item !== this);
+            }
+            singleupdatePriceAndImages();
+        });
+        $('.single-select:checked').each(function () {
+            SingleSelectedOrder.push(this);
+        });
+        singleupdatePriceAndImages();
+
+        function updatePriceAndImages() {
+            let totalPrice = 0;
+            $('#tri-image-preview').empty();
+            TriSelectedOrder.forEach(item => {
+                const price = parseInt($(item).data('price'), 10);
+                const imageSrc = $(item).data('image');
+                totalPrice += price;
+                const img = $('<img />', {
+                    src: imageSrc,
+                    class: 'img-thumbnail',
+                    style: 'width: 80px; height: 80px; object-fit: cover;'
+                });
+                $('#tri-image-preview').append(img);
+            });
+            const discountPrice = Math.round(totalPrice * 1.15);
+            $('#TriPrice').text(discountPrice);
+            $('#TriPayOnly').text(totalPrice);
+        }
+        $('.tri-select').on('change', function () {
+            $('#TriMsg').text('');
+            const isChecked = $(this).is(':checked');
+            if (isChecked) {
+                TriSelectedOrder.push(this);
+                if (TriSelectedOrder.length > 3) {
+                    const firstSelected = TriSelectedOrder.shift();
+                    $(firstSelected).prop('checked', false);
+                }
+            } else {
+                TriSelectedOrder = TriSelectedOrder.filter(item => item !== this);
+            }
+            updatePriceAndImages();
+        });
+        $('.tri-select:checked').each(function () {
+            TriSelectedOrder.push(this);
+        });
+        updatePriceAndImages();
+
+        $("#monoBuyNow").on("click", function () {
+            var checkedCount = $(".single-select:checked").length;
+            if (checkedCount === 0) {
+                $('#monoMsg').text("You must choose at least 1 course in Mono Pack");
+            }
+        });
+
+        $("#TriBuyNow").on("click", function () {
+            var checkedCount = $(".tri-select:checked").length;
+            if (checkedCount < 3) {
+                $('#TriMsg').text("You must choose at least 3 courses in Tri Pack");
+            }
+        });
+
+    });
+</script>

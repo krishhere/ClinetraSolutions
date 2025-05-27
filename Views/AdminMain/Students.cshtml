@@ -1,0 +1,51 @@
+﻿@using System.Data
+@{
+    ViewData["Title"] = "Admin main";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    DataTable dtStudentsData = ViewData["StudentsData"] as DataTable;
+}
+<div class="row">
+    <table class="table table-bordered table-hover text-center">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Courses</th>
+                <th>Duration</th>
+                <th>Fee</th>
+                <th>Discount</th>
+                <th>Paid Fees</th>
+                <th>Balance Fees</th>
+                <th>Joining Date</th>
+                <th>Course End Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (DataRow row in dtStudentsData.Rows)
+            {
+                <tr>
+                    <td>@row["Id"]</td>
+                    <td>@row["Name"]</td>
+                    <td>@row["Category"]</td>
+                    <td style="text-align:left;">
+                        @{
+                            string[] arr = @row["Courses"].ToString().Split(", ");
+                        }
+                        @for (int i = 0; i < arr.Length; i++)
+                        {
+                            @($"{i + 1}) {arr[i]}")<br/>;
+                        }
+                    </td>
+                    <td>@row["Duration"] months</td>
+                    <td>Rs. @row["Fee"]</td>
+                    <td>@row["Discount"] % </td>
+                    <td>Rs. @row["PaidFees"]</td>
+                    <td>Rs. @row["BalanceFees"]</td>
+                    <td>@Convert.ToDateTime(row["JoiningDate"]).ToString("MMM dd, yyyy")</td>
+                    <td>@Convert.ToDateTime(row["CourseEndDate"]).ToString("MMM dd, yyyy")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,71 @@
+﻿@using System.Data
+@model ClinetraSolutions.Models.PharmaModel
+@{
+    ViewData["Title"] = "Pharma";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="page-banner" style="background: url(images/slide-02-bg.jpg) center #f9f9f9;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>Pharma IT</h2>
+            </div>
+            <div class="col-md-6">
+                <ul class="breadcrumbs">
+                    <li><a href="/Home">Home</a></li>
+                    <li>Pharma IT</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<section id="service-details" class="project service-details">
+    <div class="container">
+        <div class="text-center mt-4">
+            <div class="btn-group">
+                <button class="btn-system btn-large" id="btnBpharmacy">B pharmacy</button>
+                <button class="btn-system border-btn btn-large" id="btnMBBS">MBBS</button>
+            </div>
+        </div>
+        <div class="row g-4" id="pharmaContainer">
+            @await Html.PartialAsync("PharmaPartial", Model)
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="~/js/jquery3.7.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#btnBpharmacy').click(function () {
+                loadPharmaData('B pharmacy');
+            });
+
+            $('#btnMBBS').click(function () {
+                loadPharmaData('MBBS');
+            });
+
+            function loadPharmaData(studentType) {
+                $.ajax({
+                    url: '@Url.Action("FilterPharma", "Pharma")',
+                    type: 'GET',
+                    data: { studentType: studentType },
+                    success: function (result) {
+                        $('#pharmaContainer').html(result);
+                        if (studentType === 'MBBS') {
+                            $('#btnBpharmacy').removeClass('btn-system btn-large').addClass('btn-system border-btn btn-large');
+                            $('#btnMBBS').removeClass('btn-system border-btn btn-large').addClass('btn-system btn-large');
+                        } else {
+                            $('#btnBpharmacy').removeClass('btn-system border-btn btn-large').addClass('btn-system btn-large');
+                            $('#btnMBBS').removeClass('btn-system btn-large').addClass('btn-system border-btn btn-large');
+                        }
+                    },
+                    error: function () {
+
+                    }
+                });
+            }
+        });
+    </script>
+}

@@ -1,0 +1,177 @@
+﻿@using System.Data
+@using Newtonsoft.Json
+@{
+    ViewData["Title"] = "Admin main";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    DataTable dtAllCourses = ViewData["AllCourses"] as DataTable;
+    DataTable dtAllSeats = ViewData["AllSeats"] as DataTable;
+    var allCoursesJson = JsonConvert.SerializeObject(dtAllCourses);
+}
+<div class="row">
+    <h3 class="text-center">Set a new batch</h3>
+    <div class="col-md-3">
+        <label for="Category">Categories:</label>
+        <select name="Category" id="Category" class="form-control">
+            @{
+                IList<string> uniqueCategories = dtAllCourses.AsEnumerable().Select(row => row.Field<string>("Category")).Distinct().ToList();
+            }
+            <option value="select">Select a category</option>
+            @foreach (string value in uniqueCategories)
+            {
+                <option value="@value">@value</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="courses">Courses:</label>
+        <select name="courses" id="courses" class="form-control">
+            <option value="">Select a course</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label for="Category">Select a date for new batch:</label>
+        <input id="batchDate" type="datetime-local" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <br />
+        <input type="button" id="btnNewBatch" class="btn btn-info" value="Set a new batch" />
+    </div>
+    <div class="col-md-12">
+        <br />
+        <p id="msgStatus" class="text-center"></p>
+    </div>
+</div>
+<hr />
+
+<div class="row">
+    <h3 class="text-center">Update batch date and time</h3>
+    <table class="table table-bordered text-center">
+        <thead class="table-dark">
+            <tr>
+                <th style="width:140px;">Course Name</th>
+                <th style="width:200px;">Course Catogory</th>
+                <th>Batch Start Date</th>
+                <th style="width:140px;">Available Seats</th>
+                <th style="width:120px;">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dtAllSeats != null)
+            {
+                foreach (DataRow row in dtAllSeats.Rows)
+                {
+                    <tr>
+                        <td style="display:none;">@row["SeatId"]</td>
+                        <td>@row["Category"]</td>
+                        <td>@row["CourseName"]</td>
+                        <td>
+                            Existed on: <span style="border:1px solid grey;padding:2px 10px;margin-right:20px; border-radius:4px;">@Convert.ToDateTime(row["BatchStartDate"]).ToString("dd MMM yy, HH:mm")</span>
+                            Update to: <input id="updateBatchDate" type="datetime-local" class="text-center" style="border-radius:4px;border:1px solid grey;" />
+                        </td>
+                        <td>@row["AvailableSeats"]</td>
+                        <td>
+                            <input id="btnUpdate" type="button" data-seat="@row["SeatId"]" value="Update" class="btn btn-warning" />
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="~/js/jquery3.7.js"></script>
+<script>
+    HidePasDates();
+    function HidePasDates() {
+        const inputElement = document.getElementById("updateBatchDate");
+        const today = new Date().toISOString().slice(0, 16);
+        inputElement.min = today;
+    }
+
+    $(document).ready(function () {
+        var allCourses = @Html.Raw(allCoursesJson);
+        $('#Category').on('change', function () {
+            var selectedCategory = $(this).val();
+            var coursesDropdown = $('#courses');
+            coursesDropdown.empty();
+
+            if (selectedCategory !== "select") {
+                var filteredCourses = allCourses.filter(function (course) {
+                    return course.Category === selectedCategory;
+                });
+
+                var uniqueCourses = [];
+                var courseNamesSet = new Set();
+
+                $.each(filteredCourses, function (index, course) {
+                    if (!courseNamesSet.has(course.CourseName)) {
+                        courseNamesSet.add(course.CourseName);
+                        uniqueCourses.push(course);
+                    }
+                });
+
+                $.each(uniqueCourses, function (index, course) {
+                    coursesDropdown.append($('<option>', {
+                        value: course.Id,
+                        text: course.CourseName
+                    }));
+                });
+            }
+        });
+
+        $('#btnNewBatch').on('click', function () {
+            var course = $('#courses').val();
+            var batchDate = $('#batchDate').val();
+            var courseName = $('#courses option:selected').text();
+            if (batchDate === "") {
+                alert("Please select all fields properly.");
+                return;
+            }
+            $.ajax({
+                url: '/AdminMain/SetNewBatch',
+                type: 'POST',
+                data: {
+                    CourseId: course,
+                    CourseName: courseName,
+                    BatchDate: batchDate
+                },
+                success: function (response) {
+                    if (response.message.includes("successfully")) {
+                        $('#msgStatus').text(response.message).css('color', 'green');
+                    } else {
+                        $('#msgStatus').text(response.message).css('color', 'red');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#msgStatus').text("Something went wrong! Contact developer.").css('color', 'red');
+                }
+            });
+        });
+
+        $('#btnUpdate').on('click', function () {
+            var seatId = $(this).data('seat');
+            var batchStartDate = $(this).closest('tr').find('#updateBatchDate').val();
+
+            $.ajax({
+                url: '/AdminMain/UpdateBatch',
+                type: 'POST',
+                data: {
+                    SeatId: seatId,
+                    BatchStartDate: batchStartDate
+                },
+                success: function (response) {
+                    if (response.message.includes("successfully")) {
+                        alert('Batch date updated successfully!');
+                        location.reload();
+                    } else {
+                        alert('Batch date is NOT updated!');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Error: ' + error);
+                    alert('Something went wrong. Please try again.');
+                }
+            });
+        });
+    });
+</script>

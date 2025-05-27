@@ -1,0 +1,59 @@
+﻿@using System.Data
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    DataTable dtcourses = ViewData["courses"] as DataTable;
+}
+<div class="page-banner" style="padding:20px 0; background: url(images/slide-02-bg.jpg) center #f9f9f9;">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <h2>@dtcourses?.Rows[0]["CourseName"]</h2>
+            </div>
+            <div class="col-md-6">
+                <ul class="breadcrumbs">
+                    <li><a href="/Home">Home</a></li>
+                    <li><a href="/Courses">All Courses</a></li>
+                    <li>@dtcourses?.Rows[0]["CourseName"]</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="content">
+    <div class="container">
+        @if (dtcourses != null && dtcourses.Rows.Count > 0)
+        {
+            <div class="page-content">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4 class="classic-title"><span>@dtcourses?.Rows[0]["CourseName"]</span></h4>
+                        @Html.Raw(dtcourses.Rows[0]["courseDetails"])
+                    </div>
+                </div>
+                @if (dtcourses?.Rows[0]["CourseName"].ToString() == "SeleniumC#")
+                {
+                    <div class="hr1" style="margin-bottom:50px;"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4 class="classic-title"><span>Training path</span></h4>
+                            <img src="~/images/qa/path.png" />
+                        </div>
+                        <div class="col-md-6">
+                            <h4 class="classic-title"><span>Salary scale</span></h4>
+                            <img src="~/images/qa/salary.png" />
+                        </div>
+                    </div>
+                }
+                <div class="hr1" style="margin-bottom:50px;"></div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        @{
+                            string table = dtcourses.TableName == "MedicalDeviceVigilance" ? "MedicalDevice" : dtcourses.TableName;
+                        }
+                        <a href="@Url.Action("Index", table)" class="btn" style="width:200px;background-color:#008374;color:#fff;">Enroll This Course</a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

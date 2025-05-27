@@ -1,0 +1,415 @@
+﻿@using System.Data
+@model ClinetraSolutions.Models.CourseAvailability
+@Html.AntiForgeryToken()
+@{
+    Layout = null;
+    var isUser = Context.Session.GetString("isUser");
+    string? error = ViewBag.Error as string;
+    DataTable? dtEnquiryData = ViewData["EnquiryData"] as DataTable;
+}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="dark">
+<head>
+    <title>Clinetra - Student Enroll</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .invoice-box {
+            padding: 30px;
+            border: 1px solid #eee;
+            box-shadow: 0 0 10px rgba(0, 0, 0, .15);
+            max-width: 1000px;
+            margin: auto;
+        }
+
+        .table th, .table td {
+            vertical-align: middle;
+        }
+    </style>
+    <script>
+        window.onload = function () {
+            window.history.forward();
+            setTimeout('window.history.forward();', 500);
+        };
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+    </script>
+</head>
+<body>
+    <div id="login" class="p-4">
+        <h3 class="text-center">~: New Student Enrollment Billing Form :~</h3>
+        @if (error != null)
+        {
+            <div class="alert alert-danger">
+                @error
+                , Reload the page
+            </div>
+        }
+        @if (isUser != "true")
+        {
+            <div class="invoice-box" style="width:500px;text-align:center;">
+                <form method="post">
+                    <div class="mb-3">
+                        <input type="password" name="username" class="form-control" placeholder="Enter user name" autocomplete="off" autofocus required />
+                    </div>
+                    <div class="mb-3">
+                        <input type="password" name="password" class="form-control" placeholder="Enter password" required />
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Login</button>
+                </form>
+            </div>
+        }
+        else
+        {
+            <div id="EnrollContent">
+                <div class="invoice-box">
+                    <div class="row mb-4">
+                        <form>
+                            <div class="col-md-12">
+                                <h4 class="text-center"><u>Student Information</u></h4>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Student Id</label>
+                                        <span id="studentId"></span>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="studentName" class="form-label">Full Name</label>
+                                        <input type="text" class="form-control" id="studentName" placeholder="Enter full name" required autocomplete="off">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="studentEmail" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="studentEmail" placeholder="Enter email" required autocomplete="off">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="studentPhone" class="form-label">Phone</label>
+                                        <input type="text" class="form-control" id="studentPhone" placeholder="Enter phone number" required autocomplete="off">
+                                    </div>
+                                    <div class="col-md-8">
+                                        <label for="studentAddress" class="form-label">Address</label>
+                                        <textarea class="form-control" id="studentAddress" placeholder="Enter Address" rows="3" required autocomplete="off"></textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <h4 class="text-center"><u>Course Details</u></h4>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <label for="category" class="form-label">Select Category</label>
+                                        <select class="form-select" id="category" required autocomplete="off">
+                                            <option value="">-- Select Category --</option>
+                                            <option value="Medical Device">Medical Device</option>
+                                            <option value="IT">IT</option>
+                                            <option value="Pharma">Pharma</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="courseName" class="form-label">Course Name(s)</label>
+                                        <select class="form-select" id="courseName" required autocomplete="off"></select>
+                                    </div>
+                                    <div id="courseAvailabilityContainer" class="col-md-12">
+                                        @if (Model != null)
+                                        {
+                                            @await Html.PartialAsync("CourseAvailabilityPartial", Model)
+                                        }
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="courseDuration" class="form-label">Duration</label>
+                                        <input type="number" class="form-control" id="courseDuration" placeholder="Course duration in months" required autocomplete="off">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="courseFee" class="form-label">Fee (₹)</label>
+                                        <input type="number" class="form-control" id="courseFee" placeholder="Enter price" required autocomplete="off">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="discount" class="form-label">Discount (₹)</label>
+                                        <input type="number" class="form-control" id="discount" value="0" onchange="calculateBalance()">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="paid" class="form-label">Paid (₹)</label>
+                                        <input type="number" class="form-control" id="paid" placeholder="Fees paid" required autocomplete="off" onchange="calculateBalance()">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <label for="remaining" class="form-label">Balance Fee (₹)</label>
+                                        <input type="number" class="form-control" id="remaining" value="0.00" disabled required autocomplete="off">
+                                    </div>
+                                </div>
+                            </div>
+                            <hr />
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn btn-primary" style="width:250px;" onclick="generateInvoice()">Enroll & Generate Invoice</button>
+                            </div>
+                        </form>
+                    </div>
+                    <script>
+                        document.getElementById("studentId").textContent = new Date().toISOString().replace(/\D/g, '').slice(0, 12);
+                        function calculateBalance() {
+                            let fee = parseFloat(document.getElementById("courseFee").value) || 0;
+                            let discount = parseFloat(document.getElementById("discount").value) || 0;
+                            let paid = parseFloat(document.getElementById("paid").value) || 0;
+
+                            document.getElementById("remaining").value = (fee - discount - paid).toFixed(2);
+                        }
+                    </script>
+                </div>
+                <br />
+                <div id="invoiceMain">
+                    <div id="invoice" class="invoice-box" style="max-width: 800px; margin: auto; padding: 50px; border: 1px solid #a1a1a1;">
+                        <div class="text-center">
+                            <h2 style="font-weight:bold;">Clinetra solutions</h2>
+                            <p>KPHB, Hyderabad, India</p>
+                            <p><strong>Phone:</strong> +91-9876543210 | <strong>Email:</strong> info@abctraining.com</p>
+                            <hr />
+                            <h3><u>Student Enrollment Invoice</u></h3>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <h4><u>Student Information</u></h4>
+                            <p><strong>Id:</strong> <span id="inv_studentId"></span></p>
+                            <p><strong>Name:</strong> <span id="inv_studentName"></span></p>
+                        </div>
+
+                        <div style="margin-top: 20px;">
+                            <h4><u>Course Details</u></h4>
+                            <p><strong>Category:</strong> <span id="inv_category"></span></p>
+                            <p><strong>Course Name(s):</strong> <span id="inv_courseName"></span></p>
+                            <p><strong>Duration:</strong> <span id="inv_courseDuration"></span></p>
+                            <p><strong>Fee:</strong> ₹ <span id="inv_courseFee"></span></p>
+                            <p><strong>Discount:</strong> <span id="inv_discount"></span> % </p>
+                            <p><strong>Paid Fees:</strong> ₹ <span id="inv_paid"></span></p>
+                            <p><strong>Balance Fees:</strong> ₹ <span id="inv_balance"></span></p>
+                            <hr />
+                        </div>
+                    </div>
+                    <p style="text-align:center;"><button onclick="printInvoice()">Print</button></p>
+                </div>
+            </div>
+        }
+    </div>
+    <script src="~/js/jquery3.7.js"></script>
+    <script>
+        $('#invoiceMain').hide();
+
+        function submitStudentData() {
+            const data = {
+                name: $('#studentName').val(),
+                id: $('#studentId').text(),
+                category: $('#category option:selected').text(),
+                courses: $('#courseName option:selected').map(function () {
+                    return $(this).text();
+                }).get().join(', '),
+                duration: $('#courseDuration').val(),
+                fee: parseInt($('#courseFee').val()) || 0,
+                discount: parseInt($('#discount').val()) || 0,
+                paid: parseInt($('#paid').val()) || 0,
+                remaining: parseInt($('#remaining').val()) || 0
+            };
+            $.ajax({
+                url: '/StudentEnroll/EnrollAStudent',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function (response) {
+                    if (response.message.includes("Contact developer")) {
+                        alert("Error while enrolling student, Contact Developer:");
+                    }
+                },
+                error: function (error) {
+                    alert('Error while enrolling student, Contact Developer:');
+                }
+            });
+        }
+
+        $('#category').on('change', function () {
+            var selectedCategory = $(this).val();
+            const $courseDropdown = $('#courseName');
+            $courseDropdown.empty();
+            $courseDropdown.append(`<option value="0">-- Select course --</option>`);
+            if (selectedCategory !== '') {
+                $.ajax({
+                    url: '/AdminMain/GetCourses',
+                    type: 'GET',
+                    data: { category: selectedCategory },
+                    success: function (data) {
+                        if (data && data.length > 0) {
+                            $.each(data, function (i, course) {
+                                const date = new Date(course.batchStartDate);
+                                const day = String(date.getDate()).padStart(2, '0');
+                                const month = date.toLocaleString('default', { month: 'short' });
+                                const year = String(date.getFullYear()).slice(-2);
+                                const time = date.toTimeString().split(' ')[0];
+
+                                const formattedDate = `${day} ${month} ${year}:${time}`;
+                                $courseDropdown.append(`<option value="${course.id}" data-price="${course.price}" data-seatId="${course.seatId}">${course.name} - ${formattedDate} - ${course.availableSeats}</option>`);
+                            });
+                        } else {
+                            $courseDropdown.append('<option disabled>No courses found</option>');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert('Error:', error);
+                    }
+                });
+            }
+        });
+
+        $('#courseName').on('change', function () {
+            CourseAvailability();
+            $('#paid').val(0);
+            $('#discount').val(0);
+            $('#remaining').val(0);
+            let total = 0;
+            $('#courseName option:selected').each(function () {
+                const rawPrice = $(this).data('price').toString().replace(/,/g, '');
+                const price = parseInt(rawPrice) || 0;
+                total += price;
+            });
+            $('#courseFee').val(total);
+        });
+
+        function CourseAvailability() {
+            var selectedOption = $('#courseName option:selected');
+            var courseName = selectedOption.text();
+            var courseId = $('#courseName').val();
+            var seatid = selectedOption.data('seatid');
+            $.ajax({
+                url: '/StudentEnroll/CourseAvailability',
+                type: 'GET',
+                data: { seatid: seatid },
+                success: function (response) {
+                    if (typeof response === 'object' && response.message) {
+                        alert("Error while showing seat availability, Contact Developer.");
+                    } else {
+                        $('#courseAvailabilityContainer').html(response);
+                    }
+                },
+                error: function (error) {
+                    alert("Error while showing seat availability , Contact Developer:");
+                }
+            });
+        }
+
+        $('#paid').on('input', function () {
+            var courseFee = parseInt($('#courseFee').val());
+            var paid = parseInt($('#paid').val());
+            if (paid <= courseFee) {
+                $('#remaining').val((courseFee - paid).toFixed(0));
+            } else {
+                alert("Paid amount exceeds the course fee. Please check your input!");
+                $('#paid').val(0);
+            }
+        });
+
+        function calculateFinalPrice() {
+            let total = 0;
+            $('#courseName option:selected').each(function () {
+                const price = parseInt(($(this).data('price') || '0').toString().replace(/,/g, ''));
+                total += price;
+            });
+            const discountPercent = parseInt($('#discount').val()) || 0;
+            const discountAmount = (total * discountPercent) / 100;
+            const finalPrice = parseInt(total - discountAmount);
+            $('#courseFee').val(finalPrice);
+        }
+
+        $('#discount').on('input', calculateFinalPrice);
+
+        function generateInvoice() {
+            event.preventDefault();
+            const name = $('#studentName').val();
+            const id = $('#studentId').text();
+            const category = $('#category option:selected').text();
+            const courses = $('#courseName option:selected').map(function () {
+                return $(this).text();
+            }).get().join(', ');
+            const duration = $('#courseDuration').val();
+            const fee = parseInt($('#courseFee').val());
+            const discount = parseInt($('#discount').val());
+            const paid = parseInt($('#paid').val());
+            const remaining = parseInt($('#remaining').val());
+
+            if (paid <= 1000) {
+                alert("Minimum fee is 1000");
+                return;
+            }
+            if (!name || !id || !category || !courses || !duration || !fee || isNaN(fee) || fee <= 0 || discount < 0 || isNaN(discount) || !paid || isNaN(paid) || paid < 1000 || !remaining || isNaN(remaining) || remaining < 0) {
+                alert("Please fill out all fields correctly.");
+                return;
+            }
+
+            $('#invoiceMain').show();
+            $('html, body').animate({
+                scrollTop: $('#invoiceMain').offset().top
+            }, 800);
+            $('#inv_studentName').text(name);
+            $('#inv_studentId').text(id);
+            $('#inv_category').text(category);
+            $('#inv_courseName').text(courses);
+            $('#inv_courseDuration').text(duration);
+            $('#inv_courseFee').text(fee.toFixed(0));
+            $('#inv_discount').text(discount);
+            $('#inv_paid').text(paid.toFixed(0));
+            $('#inv_balance').text(remaining.toFixed(0));
+            submitStudentData();
+        }
+
+        function printInvoice() {
+            const invoice = document.getElementById("invoice");
+            invoice.style.display = "block";
+            const originalContent = document.body.innerHTML;
+            const invoiceContent = invoice.outerHTML;
+            document.body.innerHTML = invoiceContent;
+            window.print();
+            document.body.innerHTML = originalContent;
+            location.reload();
+        }
+
+        $(document).on("click", ".avail", function () {
+            let seatId = $(this).data("avail");
+            $.ajax({
+                url: '/StudentEnroll/SeatAvail',
+                type: 'POST',
+                data: { seatId: seatId },
+                success: function (response) {
+                    alert(response.message);
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: " + error);
+                }
+            });
+        });
+    </script>
+    <script>
+        let inactivityTimer;
+
+        function clearSessionAndReload() {
+            $.ajax({
+                type: 'POST',
+                url: '/StudentEnroll/ClearSession',
+                headers: {
+                    'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
+                },
+                success: function () {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                }
+            });
+        }
+
+        function resetInactivityTimer() {
+            clearTimeout(inactivityTimer);
+            inactivityTimer = setTimeout(clearSessionAndReload, 2 * 60 * 1000);
+        }
+
+        $(document).on('mousemove keydown scroll touchstart', resetInactivityTimer);
+        $(document).ready(resetInactivityTimer);
+    </script>
+</body>
+</html>

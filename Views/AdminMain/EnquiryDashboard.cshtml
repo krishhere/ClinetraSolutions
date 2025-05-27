@@ -1,0 +1,34 @@
+﻿@using System.Data
+@{
+    ViewData["Title"] = "Admin main";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    DataTable dtEnquiryData = ViewData["EnquiryData"] as DataTable;
+}
+<div class="row">
+    <table class="table-bordered table-hover text-center">
+        <thead>
+            <tr style="background-color:#999999;">
+                <th>Id</th>
+                <th>Name</th>
+                <th>Mobile</th>
+                <th>Qualification</th>
+                <th>Comments</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (dtEnquiryData != null)
+            {
+                foreach (DataRow row in dtEnquiryData.Rows)
+                {
+                    <tr>
+                        <td>@row["Id"]</td>
+                        <td>@row["Name"]</td>
+                        <td>@row["Mobile"]</td>
+                        <td>@row["Qualification"]</td>
+                        <td style="max-width: 200px; height: 50px; overflow-y: hidden; white-space: nowrap; text-overflow: ellipsis;">@row["Comments"]</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>
