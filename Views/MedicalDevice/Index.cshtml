@@ -1,6 +1,6 @@
 ﻿@using System.Data
 @{
-    ViewData["Title"] = "Clinetra - Medical Device courses";
+    ViewData["Title"] = "Medical Device courses";
     Layout = "~/Views/Shared/_Layout.cshtml";
     DataTable dtMedicalDevice = ViewData["MedicalDevice"] as DataTable;
 }
@@ -30,7 +30,8 @@
         border-radius: 20px;
     }
 </style>
-<div class="page-banner" style="background: url(images/slide-02-bg.jpg) center #f9f9f9;">
+
+<div class="page-banner">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
@@ -60,8 +61,7 @@
                                 <div class="mt-2 text-warning fw-bold">Save up to ~5%</div>
                             </div>
                             <div class="plan-price">
-                                <div class="price-value">₹ <span id="monoPrice" style="text-decoration:line-through;">0</span><span>.00</span></div>
-                                <div class="interval">/course</div>
+                                <div class="price-value">₹ <span id="monoPrice" style="text-decoration:line-through;">0</span><span>.00</span> / course</div>
                                 <div>Pay only: <strong class="text-primary">₹ <span id="monoPayOnly" class="fs-4 fw-bold" style="font-size:large;">0</span></strong></div>
                             </div>
                             <div class="plan-list" style="text-align:left;">
@@ -71,7 +71,7 @@
                                         <li>
                                             <input type="checkbox" class="form-check-input me-2 single-select" data-value="@row["CourseName"]"
                                                    data-price="@row["Price"]" data-image="data:image/png;base64,@Convert.ToBase64String((byte[])row["image"])" style="border-color: black; width: 20px; height: 20px;" />
-                                            <a href="@Url.Action("Index", "CourseDetails", new { courseType = "pharma", course = row["CourseName"] })">
+                                            <a href="@Url.Action("Index", "CourseDetails", new { courseType = "Medical_Device", course = row["CourseName"].ToString().Replace(" ","_") })">
                                                 <strong>@row["CourseName"]</strong>
                                             </a>
                                         </li>
@@ -95,8 +95,7 @@
                                 <div class="mt-2 text-warning fw-bold">Save up to ~15%</div>
                             </div>
                             <div class="plan-price">
-                                <div class="price-value">₹ <span id="TriPrice" style="text-decoration:line-through;">0</span><span>.00</span></div>
-                                <div class="interval">/course</div>
+                                <div class="price-value">₹ <span id="TriPrice" style="text-decoration:line-through;">0</span><span>.00</span> / course</div>
                                 <div>Pay only: <strong class="text-primary">₹ <span id="TriPayOnly" class="fs-4 fw-bold" style="font-size:large;">0</span></strong></div>
                             </div>
                             <div class="plan-list" style="text-align:left;">
@@ -106,7 +105,7 @@
                                         <li>
                                             <input type="checkbox" class="form-check-input me-2 tri-select" data-value="@row["CourseName"]" data-price="@row["Price"]"
                                                    data-image="data:image/png;base64,@Convert.ToBase64String((byte[])row["image"])" style="border-color: black; width: 20px; height: 20px;" />
-                                            <a href="@Url.Action("Index", "CourseDetails", new { courseType = "pharma", course = row["CourseName"] })">
+                                            <a href="@Url.Action("Index", "CourseDetails", new { courseType = "Medical_Device", course = row["CourseName"].ToString().Replace(" ","_") })">
                                                 <b>@row["CourseName"]</b>
                                             </a>
                                         </li>
@@ -115,7 +114,7 @@
                             </div>
                             <div class="plan-signup">
                                 <span id="TriMsg" class="text-danger"></span>
-                                <a href="javascript:void(0);" id="TriBuyNow" class="btn-system btn-small">Choose</a>
+                                <a href="javascript:void(0);" id="TriBuyNow" class="btn-system btn-small border-btn">Choose</a>
                                 <div id="tri-image-preview" class="d-flex justify-content-center gap-2 flex-wrap mt-3"></div>
                             </div>
                         </div>
@@ -147,7 +146,7 @@
                 const img = $('<img />', {
                     src: imageSrc,
                     class: 'img-thumbnail',
-                    style: 'width: 80px; height: 80px; object-fit: cover;'
+                    style: 'width: 80px; height: 80px; object-fit: cover;margin:10px;'
                 });
                 $('#single-image-preview').append(img);
             });

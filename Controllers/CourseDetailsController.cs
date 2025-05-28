@@ -7,7 +7,7 @@ namespace ClinetraSolutions.Controllers
     {
         public IActionResult Index(string courseType, string course)
         {
-            ViewData["courses"] = DbData.GetCourseDetails(courseType, course.Replace("-", " "));
+            ViewData["courses"] = DbData.GetCourseDetails(courseType.Replace("_", " "), course.Replace("_", " "));
             return View();
         }
     }

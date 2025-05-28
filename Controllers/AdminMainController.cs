@@ -1,4 +1,5 @@
 ﻿using ClinetraSolutions.Services;
+using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
@@ -78,14 +79,11 @@ namespace ClinetraSolutions.Controllers
             return Json(new { status = res });
         }
         [HttpPost]
-        public JsonResult UpdatePrice(IFormCollection form)
+        public IActionResult Update(string Id, string Col, string Value)
         {
             try
             {
-                var id = form["id"];
-                var price = form["price"];
-                var coursetype = form["coursetype"];
-                bool isUpdated = DbData.UpdatePrice(id, price, coursetype);
+                bool isUpdated = DbData.Update(Id, Col, Value);
                 if (isUpdated)
                 {
                     return Json(new { message = "Price updated successfully!" });
@@ -99,6 +97,28 @@ namespace ClinetraSolutions.Controllers
             {
                 return Json(new { message = "An error occurred. Contact developer" });
             }
+        }
+        [HttpPost]
+        public IActionResult UpdateImage(string Id, string Col, IFormFile Image)
+        {
+            if (Image != null)
+            {
+                using (var ms = new MemoryStream())
+                {
+                    Image.CopyTo(ms);
+                    var imageBytes = ms.ToArray(); 
+                    bool isUpdated = DbData.UpdateImage(Id, Col, Image);
+                    if (isUpdated)
+                    {
+                        return Json(new { message = "Price updated successfully!" });
+                    }
+                    else
+                    {
+                        return Json(new { message = "Failed to update price." });
+                    }
+                }
+            }
+            return Json(new { success = true });
         }
         [HttpPost]
         public JsonResult SetNewBatch(IFormCollection form)

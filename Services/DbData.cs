@@ -57,11 +57,14 @@ namespace ClinetraSolutions.Services
             {
                 con = new MySqlConnection(conn);
                 con.Open();
-                byte[] imageData;
-                using (var memoryStream = new MemoryStream())
+                byte[] imageData = null;
+                if (courseImage != null)
                 {
-                    courseImage.CopyToAsync(memoryStream);
-                    imageData = memoryStream.ToArray();
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        courseImage.CopyToAsync(memoryStream);
+                        imageData = memoryStream.ToArray();
+                    }
                 }
                 string query = $"INSERT INTO Courses(Category,CourseName,CourseDetails,Image,Price,StudentType) VALUES(@Category,@CourseName,@CourseDetails,@Image,@coursePrice,@StudentType)";
                 using (MySqlCommand cmd = new MySqlCommand(query, con))
@@ -98,6 +101,11 @@ namespace ClinetraSolutions.Services
             string query = $"SELECT C.Id as Id,CS.seatId as SeatId, Category, CourseName, CourseDetails, Price, Image, StudentType, BatchStartDate, AvailableSeats FROM Courses C inner join CourseSeats CS on C.id=CS.CourseId where Category= '{Category}'";
             return GetDBTable(query, Category);
         }
+        public static DataTable GetACourse(string Category)
+        {
+            string query = $"SELECT Id, Category, CourseName, CourseDetails, Price, Image, StudentType FROM Courses where Category='{Category}'";
+            return GetDBTable(query, Category);
+        }
         public static DataTable GetAllCourses()
         {
             string query = "SELECT Id, Category, CourseName, CourseDetails, Price, Image, StudentType FROM Courses";
@@ -111,7 +119,7 @@ namespace ClinetraSolutions.Services
         public static DataTable GetCourseDetails(string category, string course)
         {
             string query = $"SELECT Id, CourseName, courseDetails, image, Price FROM Courses where Category='{category}' and CourseName like '%{course}%'";
-            return GetDBTable(query, tableName: category.Replace(" ",""));
+            return GetDBTable(query, tableName: category.Replace(" ", ""));
         }
         public static DataTable GetPharmaCourse(string studentType)
         {
@@ -154,7 +162,7 @@ namespace ClinetraSolutions.Services
             }
             return dt;
         }
-        public static bool UpdatePrice(string id, string price, string coursetype)
+        public static bool Update(string Id, string Col, string Value)
         {
             bool flag = false;
             string res = string.Empty;
@@ -165,11 +173,46 @@ namespace ClinetraSolutions.Services
             {
                 con = new MySqlConnection(conn);
                 con.Open();
-                string query = $"UPDATE {coursetype} SET Price = @Price WHERE Id = @Id";
+                string query = $"UPDATE Courses SET {Col} = '{Value}' WHERE Id = {Id}";
                 using (MySqlCommand cmd = new MySqlCommand(query, con))
                 {
-                    cmd.Parameters.AddWithValue("@Price", price);
-                    cmd.Parameters.AddWithValue("@Id", id);
+                    cmd.ExecuteNonQuery();
+                    flag = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                res = "Database error, contact your developer.";
+            }
+            finally
+            {
+                con?.Close();
+            }
+            return flag;
+        }
+        public static bool UpdateImage(string Id, string Col, IFormFile Image)
+        {
+            bool flag = false;
+            string res = string.Empty;
+            JObject db = ReadJSONData();
+            MySqlConnection con = null;
+            string conn = db["ConnectionStrings"]["MySqlConnection"].ToString();
+            try
+            {
+                con = new MySqlConnection(conn);
+                con.Open();
+                byte[] imageData = null;
+                if (Image != null)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        Image.CopyToAsync(memoryStream);
+                        imageData = memoryStream.ToArray();
+                    }
+                }
+                string query = $"UPDATE Courses SET {Col} = '{imageData}' WHERE Id = {Id}";
+                using (MySqlCommand cmd = new MySqlCommand(query, con))
+                {
                     cmd.ExecuteNonQuery();
                     flag = true;
                 }

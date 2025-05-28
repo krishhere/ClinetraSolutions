@@ -7,193 +7,333 @@
     DataTable dtPharma = ViewData["Pharma"] as DataTable;
 }
 <style>
-    .collapsible-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 2s ease;
-        background-color: #f1f1f1;
-        padding: 0 15px;
+    .toolbar {
+        background: #f0f0f0;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px 5px 0 0;
     }
 
-        .collapsible-content.show {
-            max-height: fit-content;
-            padding: 10px 15px;
+        .toolbar button, .toolbar select {
+            font-size: 16px;
+            margin-right: 5px;
+            cursor: pointer;
+            background: white;
+            border: 1px solid #ccc;
+            padding: 5px 10px;
+            border-radius: 3px;
         }
 </style>
-<div class="container" style="padding-top:80px;">
-    <div class="row">
-        <button type="button" class="btn btn-info" data-toggle="collapse" data-target="#demo">Add Courses</button>
-        <div id="demo" class="collapse">
-            <div class="col-md-8 d-flex flex-wrap">
-                <div class="col-md-6 mb-2">
-                    <label for="courseType" class="form-label">Course Type:</label>
-                    <select class="form-select" id="courseType" required style="width:100%">
-                        <option value="IT">IT</option>
-                        <option value="Pharma">Pharma</option>
-                        <option value="Medical Device">Medical Device</option>
-                    </select>
-                    <div id="onlyPharma" style="display:none;">
-                        <label for="courseType" class="form-label">Course Type:</label>
-                        <select class="form-select" id="studentType" style="width:100%">
-                            <option value="bpharmacy">B Pharmacy</option>
-                            <option value="MBBS">MBBS</option>
-                        </select>
+<div id="accordion">
+    <div class="card">
+        <div class="card-header">
+            <a class="btn" data-bs-toggle="collapse" href="#collapseOne">Add Courses</a>
+        </div>
+        <div id="collapseOne" class="collapse show" data-bs-parent="#accordion">
+            <div class="card-body">
+                <form id="demo">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="courseType" class="form-label">Course Type:</label>
+                                    <select class="form-select" id="courseType" required>
+                                        <option value="IT">IT</option>
+                                        <option value="Pharma">Pharma</option>
+                                        <option value="Medical Device">Medical Device</option>
+                                    </select>
+                                    <div id="onlyPharma" style="display:none;" class="mt-2">
+                                        <label for="studentType" class="form-label">Student Type:</label>
+                                        <select class="form-select" id="studentType">
+                                            <option value="bpharmacy">B Pharmacy</option>
+                                            <option value="MBBS">MBBS</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="courseName" class="form-label">Course Name:</label>
+                                    <input type="text" class="form-control" id="courseName" name="courseName" maxlength="50" required>
+                                </div>
+                                <div class="col-md-12 mb-3">
+                                    <label for="courseDetails" class="form-label">Course Details:</label>
+                                    <div class="editor-container">
+                                        <div class="toolbar" style="">
+                                            <button onclick="format(this, 'bold')"><b>B</b></button>
+                                            <button onclick="format(this, 'italic')"><i>I</i></button>
+                                            <button onclick="format(this, 'underline')"><u>U</u></button>
+                                            <button onclick="formatBlock(this, 'heading3')">H3</button>
+                                            <button onclick="openLinkPopup(this)">🔗 Link</button>
+                                            <button onclick="format(this, 'insertUnorderedList')"> • </button>
+                                            <button onclick="format(this, 'insertOrderedList')"> 1 </button>
+                                            <label style="margin-left:10px;">
+                                                color:
+                                                <input type="color" onchange="setColor(this, 'foreColor')">
+                                            </label>
+                                            <label style="margin-left:10px;">
+                                                Back color:
+                                                <input type="color" onchange="setColor(this, 'hiliteColor')">
+                                            </label>
+                                        </div>
+                                        <div class="editor" name="ConferenceDescription" contenteditable="true" required style="border: 1px solid #ccc; border-top: none; padding: 10px; min-height: 180px; max-height: 250px; border-radius: 0 0 5px 5px; overflow-y: auto;"></div>
+                                        <br />
+                                        <pre id="courseDetails" style="display:none;"></pre>
+                                        <div class="link-popup" style="display:none; position:absolute; background:#fff; border:1px solid #ccc; padding:10px; z-index:1000;">
+                                            <label>URL: <input type="text" id="link-url" style="width:200px;"></label><br><br>
+                                            <label>Text: <input type="text" id="link-text" style="width:200px;"></label><br><br>
+                                            <button onclick="insertLink()">Insert</button>
+                                            <button onclick="closeLinkPopup()">Cancel</button>
+                                        </div>
+                                    </div>
+                                    @* <textarea class="form-control" id="courseDetails" name="courseDetails" rows="6" required></textarea> *@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="coursePrice" class="form-label">Course Price:</label>
+                                <input type="number" class="form-control" id="coursePrice" name="coursePrice">
+                            </div>
+                            <div class="mb-3">
+                                <label for="courseImage" class="form-label">Course Photo:</label>
+                                <input type="file" class="form-control" id="courseImage" name="courseImage" onchange="courseImagepreviewImage(this)">
+                            </div>
+                            <div class="mb-3 text-center">
+                                <img id="courseImagePreview" src="#" style="display: none; max-width: 200px; max-height: 200px;" />
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-primary" id="btncourse">Add Course</button>
+                                <span id="courseStatus" class="text-center mt-2"></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <a class="collapsed btn" data-bs-toggle="collapse" href="#collapseTwo">IT Courses</a>
+        </div>
+        <div id="collapseTwo" class="collapse" data-bs-parent="#accordion">
+            <div class="card-body">
+                <div id="IT">
+                    <div class="table-responsive">
+                        <span id="spanIt" style="display:none;">IT</span>
+                        <table class="table">
+                            <thead>
+                                <tr class="text-center">
+                                    <th style="width: 30px;">Id</th>
+                                    <th style="width:140px;">Course Name</th>
+                                    <th>Course Details</th>
+                                    <th style="width: 30px;">Image</th>
+                                    <th style="width:140px;">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if (dtit != null)
+                                {
+                                    foreach (DataRow row in dtit.Rows)
+                                    {
+                                        var Id = row["Id"]?.ToString();
+                                        var image = row["Image"] as byte[];
+                                        var imageSrc = $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
+                                        <tr>
+                                            <td>@Id</td>
+                                            <td>@row["CourseName"]</td>
+                                            <td>
+                                                <div class="editor-container">
+                                                    <div class="toolbar" style="">
+                                                        <button onclick="format(this, 'bold')"><b>B</b></button>
+                                                        <button onclick="format(this, 'italic')"><i>I</i></button>
+                                                        <button onclick="format(this, 'underline')"><u>U</u></button>
+                                                        <button onclick="formatBlock(this, 'heading3')">H3</button>
+                                                        <button onclick="openLinkPopup(this)">🔗 Link</button>
+                                                        <button onclick="format(this, 'insertUnorderedList')"> • </button>
+                                                        <button onclick="format(this, 'insertOrderedList')"> 1 </button>
+                                                        <label style="margin-left:10px;">
+                                                            color:
+                                                            <input type="color" onchange="setColor(this, 'foreColor')">
+                                                        </label>
+                                                        <label style="margin-left:10px;">
+                                                            Back color:
+                                                            <input type="color" onchange="setColor(this, 'hiliteColor')">
+                                                        </label>
+                                                    </div>
+                                                    <div class="editor" name="CourseDetails" contenteditable="true" style="max-height: 300px; overflow-y: auto;">
+                                                        @Html.Raw(row["courseDetails"].ToString().Replace("\n", "<br/>"))
+                                                    </div>
+                                                    <pre class="CourseDetails" style="display:none;"></pre>
+                                                </div>
+                                                <button class="btn btn-outline-warning updateButton" data-Col="CourseDetails" data-id="@Id" type="button">Update Course Details</button>
+                                            </td>
+                                            <td>
+                                                <img src="@imageSrc" alt="No Image" style="max-width: 200px;">
+                                                <input type="file" class="form-control" id="imageSrc_@Id" name="Image" required />
+                                                <button class="btn btn-outline-warning updateButton" data-Col="Image" data-id="@Id" type="button">Update Image</button>
+                                            </td>
+                                            <td>
+                                                <div contenteditable="true" class="form-control priceUpdate" data-id="@Id">@row["Price"]</div><br />
+                                                <button class="btn btn-info updateButton" data-Col="Price" data-id="@Id">Update Price</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="col-md-6 mb-2">
-                    <label for="courseName" class="form-label">Course Name:</label>
-                    <input type="text" class="form-control" id="courseName" name="courseName" maxlength="50" required>
-                </div>
-                <div class="col-md-12 mb-2">
-                    <label for="courseDetails" class="form-label">Course Details:</label>
-                    <textarea class="form-control" id="courseDetails" name="courseDetails" rows="9" required></textarea>
-                </div>
-            </div>
-            <div class="col-md-4 d-flex flex-column align-items-center">
-                <label for="coursePrice" class="form-label">Course Price:</label>
-                <input type="number" class="form-control" id="coursePrice" name="coursePrice">
-                <label for="courseImage" class="form-label">Course Photo:</label>
-                <input type="file" class="form-control" id="courseImage" name="courseImage" onchange="courseImagepreviewImage(this)">
-                <img id="courseImagePreview" src="#" class="mt-2" style="display: none; max-width:200px;max-height:200px;" /><br />
-                <button class="btn btn-primary mt-2" id="btncourse">Add Course</button>
-                <span id="courseStatus" class="mt-2"></span>
             </div>
         </div>
     </div>
-    <br />
-    <div class="row">
-        <button type="button" class="btn btn-warning" data-toggle="collapse" data-target="#IT">IT Courses</button>
-        <div id="IT" class="collapse">
-            <div class="table-responsive">
-                <span id="spanIt" style="display:none;">IT</span>
-                <table class="table">
-                    <thead>
-                        <tr class="text-center">
-                            <th style="width: 30px;">Id</th>
-                            <th style="width:140px;">Course Name</th>
-                            <th>Course Details</th>
-                            <th style="width: 30px;">Image</th>
-                            <th style="width:140px;">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (dtit != null)
-                        {
-                            foreach (DataRow row in dtit.Rows)
-                            {
-                                var image = row["image"] as byte[];
-                                var imageSrc = image == null ? Url.Content("~/imges/blog-mini-01.jpg") : $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
-                                <tr>
-                                    <td>@row["Id"]</td>
-                                    <td>@row["CourseName"]</td>
-                                    <td>
-                                        <div style="max-height: 200px; overflow-y: auto;">
-                                            @Html.Raw(row["courseDetails"].ToString().Replace("\n", "<br/>"))
-                                        </div>
-                                    </td>
-                                    <td><img src="@imageSrc" alt="Course Image" style="max-width: 200px;"></td>
-                                    <td>
-                                        <div contenteditable="true" class="form-control priceUpdate" data-id="@row["Id"]">@row["Price"]</div><br />
-                                        <button class="btn btn-info updateButton" data-id="@row["Id"]">Update Price</button>
-                                    </td>
+
+    <div class="card">
+        <div class="card-header">
+            <a class="collapsed btn" data-bs-toggle="collapse" href="#collapseThree">Medical Device Courses</a>
+        </div>
+        <div id="collapseThree" class="collapse" data-bs-parent="#accordion">
+            <div class="card-body">
+                <div id="MedicalDevice">
+                    <div class="table-responsive">
+                        <span id="spanMedicalDeviceVigilance" style="display:none;">MedicalDeviceVigilance</span>
+                        <table class="table">
+                            <thead>
+                                <tr style="background-color:dimgray;">
+                                    <th>Id</th>
+                                    <th style="width:140px;">Course Name</th>
+                                    <th>Course Details</th>
+                                    <th>Image</th>
+                                    <th style="width:140px;">Price</th>
                                 </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (dtMedicalDeviceVigilance != null)
+                                {
+                                    @foreach (DataRow row in dtMedicalDeviceVigilance.Rows)
+                                    {
+                                        var Id = row["Id"]?.ToString();
+                                        var image = row["image"] as byte[];
+                                        var imageSrc = $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
+                                        <tr>
+                                            <td>@Id</td>
+                                            <td>@row["CourseName"]</td>
+                                            <td>
+                                                <div class="editor-container">
+                                                    <div class="toolbar" style="">
+                                                        <button onclick="format(this, 'bold')"><b>B</b></button>
+                                                        <button onclick="format(this, 'italic')"><i>I</i></button>
+                                                        <button onclick="format(this, 'underline')"><u>U</u></button>
+                                                        <button onclick="formatBlock(this, 'heading3')">H3</button>
+                                                        <button onclick="openLinkPopup(this)">🔗 Link</button>
+                                                        <button onclick="format(this, 'insertUnorderedList')"> • </button>
+                                                        <button onclick="format(this, 'insertOrderedList')"> 1 </button>
+                                                        <label style="margin-left:10px;">color: <input type="color" onchange="setColor(this, 'foreColor')">
+                                                        </label>
+                                                        <label style="margin-left:10px;">Back color: <input type="color" onchange="setColor(this, 'hiliteColor')">
+                                                        </label>
+                                                    </div>
+                                                    <div class="editor" name="CourseDetails" contenteditable="true" style="max-height: 300px; overflow-y: auto;">
+                                                        @Html.Raw(row["courseDetails"].ToString().Replace("\n", "<br/>"))
+                                                    </div>
+                                                    <pre class="CourseDetails" style="display:none;"></pre>
+                                                </div>
+                                                <button class="btn btn-outline-warning updateButton" data-Col="CourseDetails" data-id="@Id" type="button">Update Course Details</button>
+                                            </td>
+                                            <td>
+                                                <img src="@imageSrc" alt="Course Image" style="max-width: 200px;">
+                                                <input type="file" class="form-control" id="imageSrc_@Id" name="Image" required />
+                                                <button class="btn btn-outline-warning updateButton" data-Col="Image" data-id="@Id" type="button">Update Image</button>
+                                            </td>
+                                            <td>
+                                                <div contenteditable="true" class="form-control priceUpdate" data-id="@Id">@row["Price"]</div><br />
+                                                <button class="btn btn-info updateButton" data-Col="Price" data-id="@Id">Update Price</button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
-    <br />
-    <div class="row">
-        <button type="button" class="btn btn-success" data-toggle="collapse" data-target="#MedicalDevice">Medical Device Courses</button>
-        <div id="MedicalDevice" class="collapse">
-            <div class="table-responsive">
-                <span id="spanMedicalDeviceVigilance" style="display:none;">MedicalDeviceVigilance</span>
-                <table class="table">
-                    <thead>
-                        <tr style="background-color:dimgray;">
-                            <th>Id</th>
-                            <th style="width:140px;">Course Name</th>
-                            <th>Course Details</th>
-                            <th>Image</th>
-                            <th style="width:140px;">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (dtMedicalDeviceVigilance != null)
-                        {
-                            foreach (DataRow row in dtMedicalDeviceVigilance.Rows)
-                            {
-                                var image = row["image"] as byte[];
-                                var imageSrc = image == null ? Url.Content("~/imges/blog-mini-01.jpg") : $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
-                                <tr>
-                                    <td>@row["Id"]</td>
-                                    <td>@row["CourseName"]</td>
-                                    <td>
-                                        <div style="max-height: 200px; overflow-y: auto;">
-                                            @Html.Raw(row["courseDetails"].ToString().Replace("\n", "<br/>"))
-                                        </div>
-                                    </td>
-                                    <td><img src="@imageSrc" alt="Course Image" style="max-width: 200px;"></td>
-                                    <td>
-                                        <div contenteditable="true" class="form-control priceUpdate" data-id="@row["Id"]">@row["Price"]</div><br />
-                                        <button class="btn btn-info updateButton" data-id="@row["Id"]">Update Price</button>
-                                    </td>
-                                </tr>
-                            }
-                        }
-                    </tbody>
-                </table>
-            </div>
+
+    <div class="card">
+        <div class="card-header">
+            <a class="collapsed btn" data-bs-toggle="collapse" href="#collapseFour">Pharma Courses</a>
         </div>
-    </div>
-    <br />
-    <div class="row">
-        <button type="button" class="btn btn-primary" data-toggle="collapse" data-target="#Pharma">Pharma Courses</button>
-        <div id="Pharma" class="collapse table-responsive">
-            <table class="table table-striped">
-                <thead>
-                    <tr style="background-color:dimgray;color:white;">
-                        <th>Id</th>
-                        <th style="width:140px;">Course Name</th>
-                        <th>Course Details</th>
-                        <th>Image</th>
-                        <th style="width:140px;">Price</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (dtPharma != null)
-                    {
-                        foreach (DataRow row in dtPharma.Rows)
-                        {
-                            var image = row["image"] as byte[];
-                            var imageSrc = image == null ? Url.Content("~/imges/blog-mini-01.jpg") : $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
-                            <tr>
-                                <td>@row["Id"]</td>
-                                <td>@row["CourseName"]
-                                    <p class="form-control">@row["StudentType"]</p>
-                                </td>
-                                <td>
-                                    <div style="max-height: 200px; overflow-y: auto;">
-                                        @Html.Raw(row["courseDetails"].ToString().Replace("\n", "<br/>"))
-                                    </div>
-                                </td>
-                                <td><img src="@imageSrc" alt="Course Image" style="max-width: 200px;"></td>
-                                <td>
-                                    <div contenteditable="true" class="form-control priceUpdate" data-id="@row["Id"]">@row["Price"]</div><br />
-                                    <button class="btn btn-info updateButton" data-id="@row["Id"]">Update Price</button>
-                                </td>
+        <div id="collapseFour" class="collapse" data-bs-parent="#accordion">
+            <div class="card-body">
+                <div id="Pharma" class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr style="background-color:dimgray;color:white;">
+                                <th>Id</th>
+                                <th style="width:140px;">Course Name</th>
+                                <th>Course Details</th>
+                                <th>Image</th>
+                                <th style="width:140px;">Price</th>
                             </tr>
-                        }
-                    }
-                </tbody>
-            </table>
+                        </thead>
+                        <tbody>
+                            @if (dtPharma != null)
+                            {
+                                @foreach (DataRow row in dtPharma.Rows)
+                                {
+                                    var Id = row["Id"]?.ToString();
+                                    var image = row["image"] as byte[];
+                                    var imageSrc = $"data:image/jpeg;base64,{Convert.ToBase64String(image)}";
+                                    <tr>
+                                        <td>@Id</td>
+                                        <td>
+                                            @row["CourseName"]
+                                            <p class="form-control">@row["StudentType"]</p>
+                                        </td>
+                                        <td>
+                                            <div class="editor-container">
+                                                <div class="toolbar" style="">
+                                                    <button onclick="format(this, 'bold')"><b>B</b></button>
+                                                    <button onclick="format(this, 'italic')"><i>I</i></button>
+                                                    <button onclick="format(this, 'underline')"><u>U</u></button>
+                                                    <button onclick="formatBlock(this, 'heading3')">H3</button>
+                                                    <button onclick="openLinkPopup(this)">🔗 Link</button>
+                                                    <button onclick="format(this, 'insertUnorderedList')"> • </button>
+                                                    <button onclick="format(this, 'insertOrderedList')"> 1 </button>
+                                                    <label style="margin-left:10px;">color: <input type="color" onchange="setColor(this, 'foreColor')">
+                                                    </label>
+                                                    <label style="margin-left:10px;">Back color: <input type="color" onchange="setColor(this, 'hiliteColor')">
+                                                    </label>
+                                                </div>
+                                                <div class="editor" name="CourseDetails" contenteditable="true" style="max-height: 300px; overflow-y: auto;">
+                                                    @Html.Raw(row["courseDetails"].ToString().Replace("\n", "<br/>"))
+                                                </div>
+                                                <pre class="CourseDetails" style="display:none;"></pre>
+                                            </div>
+                                            <button class="btn btn-outline-warning updateButton" data-Col="CourseDetails" data-id="@Id" type="button">Update Course Details</button>
+                                        </td>
+                                        <td>
+                                            <img src="@imageSrc" alt="Course Image" style="max-width: 200px;">
+                                            <input type="file" class="form-control" id="imageSrc_@Id" name="Image" required />
+                                            <button class="btn btn-outline-warning updateButton" data-Col="Image" data-id="@Id" type="button">Update Image</button>
+                                        </td>
+                                        <td>
+                                            <div contenteditable="true" class="form-control priceUpdate" data-id="@Id">@row["Price"]</div><br />
+                                            <button class="btn btn-info updateButton" data-Col="Price" data-id="@Id">Update Price</button>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+
 <script src="~/js/jquery3.7.js"></script>
-<script src="https://cdn.tiny.cloud/1/0ma60d7pixfu9mtywbypgy490sx1uuls23t3yl0ueg9ja9nw/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+@* <script src="https://cdn.tiny.cloud/1/0ma60d7pixfu9mtywbypgy490sx1uuls23t3yl0ueg9ja9nw/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         tinymce.init({
@@ -204,7 +344,7 @@
             branding: false
         });
     });
-</script>
+</script> *@
 <script>
     $(document).ready(function () {
         $('#btncourse').on('click', function () {
@@ -215,7 +355,8 @@
             if ($('#onlyPharma').is(':visible')) {
                 studentType = $('#studentType option:selected').text().trim();
             }
-            var courseDetails = tinymce.get("courseDetails").getContent().trim();
+            var courseDetails = $("#courseDetails").text().trim();
+            // var courseDetails = tinymce.get("courseDetails").getContent().trim();
             var coursePrice = $('#coursePrice').val().trim();
             var image = $("#courseImage").prop("files")[0];
 
@@ -277,28 +418,64 @@
             }
         }
 
-        $(document).on('click', '.updateButton', function () {
-            var button = $(this);
-            var id = button.data('id');
-            var price = button.closest('tr').find('.priceUpdate').text();
-            var courseType = button.closest('div').find('span[id^="span"]:hidden').text().trim();
-
-            var formData = new FormData();
-            formData.append('id', id);
-            formData.append('price', price);
-            formData.append('coursetype', courseType);
-
+        $(".updateButton").on("click", function () {
+            var $button = $(this);
+            var col = $button.data("col");
+            var id = $button.data("id");
+            var value;
+            if (col === "CourseDetails") {
+                value = $button.closest("td").find("pre").text();
+            }
+            else if (col === "Image") {
+                var fileInput = $button.closest("td").find("input[type='file']")[0];
+                var file = fileInput.files[0];
+                if (!file) {
+                    alert("Please select an image.");
+                    return;
+                }
+                var formData = new FormData();
+                formData.append("Id", id);
+                formData.append("Image", file);
+                formData.append("Col", col);
+                $.ajax({
+                    url: "/AdminMain/UpdateImage",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (!response.message.toLowerCase().includes("Failed")) {
+                            $button.text("Updated").css("color", "#04ff04");
+                        } else {
+                            $button.text("Failed").css("color", "red");
+                        }
+                    },
+                    error: function () {
+                        alert("Error updating image.");
+                    }
+                });
+                return;
+            }
+            else if (col === "Price") {
+                value = $button.closest("td").find(".priceUpdate").text().trim();
+            }
             $.ajax({
-                url: '/AdminMain/UpdatePrice',
-                type: 'POST',
-                processData: false,
-                contentType: false,
-                data: formData,
-                success: function (response) {
-                    alert(response.message);
+                url: "/AdminMain/Update",
+                type: "POST",
+                data: {
+                    Id: id,
+                    Col: col,
+                    Value: value
                 },
-                error: function (xhr, status, error) {
-                    alert('Error updating price: ' + error);
+                success: function (response) {
+                    if (!response.message.toLowerCase().includes("Failed")) {
+                        $button.text("Updated").css("color", "#04ff04");
+                    } else {
+                        $button.text("Failed").css("color", "red");
+                    }
+                },
+                error: function () {
+                    alert("Error updating " + col + ".");
                 }
             });
         });

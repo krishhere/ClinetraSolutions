@@ -7,7 +7,7 @@ namespace ClinetraSolutions.Controllers
     {
         public IActionResult Index()
         {
-            ViewData["IT"] = DbData.GetCourse("IT");
+            ViewData["IT"] = DbData.GetACourse("IT");
             return View();
         }
     }
