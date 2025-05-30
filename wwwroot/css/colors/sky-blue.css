@@ -100,7 +100,8 @@ ul.breadcrumbs li a:hover {
 }
 
 .panel-title a {
-	color: #38cbcb;
+	color: #fff;
+	background-color: #38cbcb;
 }
 
 .panel-title a:hover {
